@@ -1,2 +1,2 @@
 # Ane-stent
-Stent simulation software.
+Stent simulation software
