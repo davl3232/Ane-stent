@@ -5,6 +5,7 @@
 
 #include <btBulletDynamicsCommon.h>
 
+
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkSphereSource.h>
 #include <vtkPolyData.h>
@@ -160,10 +161,15 @@ int main (int argc, char * argv [])
   {
     std::cout << "File is an unstructured grid" << std::endl;
   }
-  
+  vtkPolyData * output = reader->GetPolyDataOutput();
+    std::cout<<output->GetNumberOfPoints()<<std::endl;
   vtkSmartPointer<vtkNamedColors> colors =
     vtkSmartPointer<vtkNamedColors>::New();
-  
+  for(vtkIdType i =0; i<output->GetNumberOfPoints(); i++ ){
+  		double p[3];
+  		output ->GetPoint(i,p);
+  		std:: cout<<"Point "<<i<<": ("<<p[0]<<","<<p[1]<<","<<p[2]<<")"<<std::endl;
+  }
   mapper->SetInputConnection(reader->GetOutputPort());
   
   //</leer>
@@ -216,6 +222,7 @@ int main (int argc, char * argv [])
   renderWindow->Render();
   renderWindowInteractor->Start();
 
+	
 	
   pthread_exit(NULL);
 }
