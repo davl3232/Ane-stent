@@ -1,3 +1,0 @@
-/home/jose/Downloads/Bullet+VTK+threads/build/CMakeFiles/edit_cache.dir
-/home/jose/Downloads/Bullet+VTK+threads/build/CMakeFiles/rebuild_cache.dir
-/home/jose/Downloads/Bullet+VTK+threads/build/CMakeFiles/miPrimerEjemploEsUnCono.dir
