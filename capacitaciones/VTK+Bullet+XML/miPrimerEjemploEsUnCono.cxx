@@ -1,11 +1,11 @@
-
 #include <iostream>
 #include <pthread.h>
 #include <unistd.h>
+#include <vector>
 
 #include <btBulletDynamicsCommon.h>
 
-
+#include <vtkGenericDataObjectReader.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkSphereSource.h>
 #include <vtkPolyData.h>
@@ -16,6 +16,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkProperty.h>
+#include <vtkStructuredGrid.h>
 #include <vtkMatrix4x4.h>
 #include <vtkTransformFilter.h>
 #include <vtkTransform.h>
@@ -24,6 +25,8 @@
 #include <vtkDataSetMapper.h>
 #include <vtkNamedColors.h>
 
+
+std::vector <std::vector < double > > puntos;
 
 vtkSmartPointer<vtkSphereSource> coneSource =
 	vtkSmartPointer<vtkSphereSource>::New();
@@ -64,10 +67,18 @@ void * actualizar(void * att)
         dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
 
-        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+        btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 20);
 
-        btCollisionShape* fallShape = new btSphereShape(1);
+        btConvexHullShape* fallShapeConvexHull = new btConvexHullShape();
+        
+        fallShapeConvexHull->addPoint(btVector3(puntos[0][0], puntos[1][0], puntos[2][0]));
+        fallShapeConvexHull->addPoint(btVector3(puntos[0][1], puntos[1][1], puntos[2][1]));
+        fallShapeConvexHull->addPoint(btVector3(puntos[0][2], puntos[1][2], puntos[2][2]));
+        fallShapeConvexHull->addPoint(btVector3(puntos[0][3], puntos[1][3], puntos[2][3]));
+        fallShapeConvexHull->addPoint(btVector3(puntos[0][4], puntos[1][4], puntos[2][4]));
+        fallShapeConvexHull->addPoint(btVector3(puntos[0][5], puntos[1][5], puntos[2][5]));
 
+        btCollisionShape* fallShape = fallShapeConvexHull;
 
         btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
         btRigidBody::btRigidBodyConstructionInfo
@@ -89,9 +100,8 @@ void * actualizar(void * att)
         //
         dynamicsWorld->addRigidBody(fallRigidBody);
 
-				double delta = 50.0;
 
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 500; i++) {
                 dynamicsWorld->stepSimulation(1 / 60.f, 10);
 
                 btTransform trans;
@@ -104,16 +114,22 @@ void * actualizar(void * att)
 								//actor->SetMapper(mapper);
 								//renderer->AddActor(actor);
 								//actor->SetPosition(0.0,trans.getOrigin().getY(),0.0);
+								
+								
+								btQuaternion rotado = trans.getRotation();
+								
 								vtkSmartPointer<vtkTransform> transform1a =
 									vtkSmartPointer<vtkTransform>::New();
 								transform1a->PostMultiply();
-								transform1a->Translate(0.0, trans.getOrigin().getY() , 0.0);
-								delta = trans.getOrigin().getY();
+								
+								
+								transform1a->RotateWXYZ(rotado.getAngle(),rotado.getAxis().getX(),rotado.getAxis().getY(),rotado.getAxis().getZ());
+								transform1a->Translate(trans.getOrigin().getX() , trans.getOrigin().getY() , trans.getOrigin().getZ());
 		
 								actor->SetUserTransform(transform1a);
 								renderWindow->Render();
 
-                std::cout << "sphere height: " << trans.getOrigin().getY() << std::endl;
+                //std::cout << "rotation: " << rotado.getAngle() << " " << rotado.getAxis().getX() << " " << rotado.getAxis().getY() << " " << rotado.getAxis().getZ() << std::endl;
                 usleep(1000);
         }
 
@@ -152,33 +168,55 @@ int main (int argc, char * argv [])
     vtkSmartPointer<vtkXMLGenericDataObjectReader>::New();
   reader->SetFileName(argv[1]);
   reader->Update();
+  //vtkPolyData * output;
   
   if(vtkPolyData::SafeDownCast(reader->GetOutput()))
   {
     std::cout << "File is a polydata" << std::endl;
+    
   }
   else if(vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()))
   {
     std::cout << "File is an unstructured grid" << std::endl;
+    /*vtkSmartPointer<vtkGenericDataObjectReader> reader2 =
+      vtkSmartPointer<vtkGenericDataObjectReader>::New();
+		reader2->SetFileName(argv[1]);
+		reader2->Update();
+		output = reader2->GetPolyDataOutput();*/
   }
+  /*  vtkSmartPointer<vtkGenericDataObjectReader> reader =
+      vtkSmartPointer<vtkGenericDataObjectReader>::New();
+  reader->SetFileName(argv[1]);
+  reader->Update();
+
+  // All of the standard data types can be checked and obtained like this:
+  if(reader->IsFilePolyData())
+  {
+    std::cout << "output is a polydata" << std::endl;
+    vtkPolyData* output = reader->GetPolyDataOutput();
+    std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
+  }*/
+  
   vtkPolyData * output = reader->GetPolyDataOutput();
+  
     std::cout<<output->GetNumberOfPoints()<<std::endl;
   vtkSmartPointer<vtkNamedColors> colors =
     vtkSmartPointer<vtkNamedColors>::New();
+  int cont=0;
   for(vtkIdType i =0; i<output->GetNumberOfPoints(); i++ ){
   		double p[3];
   		output ->GetPoint(i,p);
-  		std:: cout<<"Point "<<i<<": ("<<p[0]<<","<<p[1]<<","<<p[2]<<")"<<std::endl;
+  		std::vector <double> nuevo;
+  		nuevo.push_back(p[0]);
+  		nuevo.push_back(p[1]);
+  		nuevo.push_back(p[2]);
+  		puntos.push_back(nuevo);
+  		cont++;
+  		//std:: cout<<"Point "<<i<<": ("<<p[0]<<","<<p[1]<<","<<p[2]<<")"<<std::endl;
   }
   mapper->SetInputConnection(reader->GetOutputPort());
   
   //</leer>
-  
-	//coneSource->SetResolution( 40 );
-	  //coneSource->SetHeight( 3 );
-	  //coneSource->SetRadius( 3 );
-	  //coneSource->SetCenter( 0.0, 50.0, 0.0 );
-	  //coneSource->Update();
 
 	vtkSmartPointer<vtkAxesActor> axes =
     vtkSmartPointer<vtkAxesActor>::New();
