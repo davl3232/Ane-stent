@@ -5,6 +5,11 @@
 
 #include <btBulletDynamicsCommon.h>
 
+#include <vtkVersion.h>
+#include <vtkCellArray.h>
+#include <vtkGeometryFilter.h>
+#include <vtkPointSource.h>
+#include <vtkDataSetSurfaceFilter.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkSphereSource.h>
@@ -28,6 +33,10 @@
 
 std::vector <std::vector < double > > puntos;
 
+
+/*vtkSmartPointer<vtkXMLGenericDataObjectReader> reader =
+	vtkSmartPointer<vtkXMLGenericDataObjectReader>::New();*/
+
 vtkSmartPointer<vtkSphereSource> coneSource =
 	vtkSmartPointer<vtkSphereSource>::New();
 
@@ -48,8 +57,15 @@ vtkSmartPointer<vtkActor> actor =
 vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
     vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
+		vtkSmartPointer<vtkGeometryFilter> geometryFilter =
+	    vtkSmartPointer<vtkGeometryFilter>::New();
 
-
+			vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+		vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+		
+		vtkSmartPointer<vtkGenericDataObjectReader> reader2 =
+		 vtkSmartPointer<vtkGenericDataObjectReader>::New();
+vtkPolyData * output;
 
 
 void * actualizar(void * att)
@@ -70,13 +86,11 @@ void * actualizar(void * att)
         btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 20);
 
         btConvexHullShape* fallShapeConvexHull = new btConvexHullShape();
-        
-        fallShapeConvexHull->addPoint(btVector3(puntos[0][0], puntos[1][0], puntos[2][0]));
-        fallShapeConvexHull->addPoint(btVector3(puntos[0][1], puntos[1][1], puntos[2][1]));
-        fallShapeConvexHull->addPoint(btVector3(puntos[0][2], puntos[1][2], puntos[2][2]));
-        fallShapeConvexHull->addPoint(btVector3(puntos[0][3], puntos[1][3], puntos[2][3]));
-        fallShapeConvexHull->addPoint(btVector3(puntos[0][4], puntos[1][4], puntos[2][4]));
-        fallShapeConvexHull->addPoint(btVector3(puntos[0][5], puntos[1][5], puntos[2][5]));
+				//vtkPolyData* output = reader2->GetPolyDataOutput();
+				for(int i =0; i < output->GetNumberOfPoints(); i++ ){
+						fallShapeConvexHull->addPoint(btVector3(puntos[i][0], puntos[i][1], puntos[i][2]));
+				}
+
 
         btCollisionShape* fallShape = fallShapeConvexHull;
 
@@ -94,7 +108,7 @@ void * actualizar(void * att)
         fallShape->calculateLocalInertia(mass, fallInertia);
         btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
         btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
-        
+
         //edit
         //fallRigidBody->setRestitution(0.5);
         //
@@ -114,18 +128,18 @@ void * actualizar(void * att)
 								//actor->SetMapper(mapper);
 								//renderer->AddActor(actor);
 								//actor->SetPosition(0.0,trans.getOrigin().getY(),0.0);
-								
-								
+
+
 								btQuaternion rotado = trans.getRotation();
-								
+
 								vtkSmartPointer<vtkTransform> transform1a =
 									vtkSmartPointer<vtkTransform>::New();
 								transform1a->PostMultiply();
-								
-								
+
+
 								transform1a->RotateWXYZ(rotado.getAngle(),rotado.getAxis().getX(),rotado.getAxis().getY(),rotado.getAxis().getZ());
 								transform1a->Translate(trans.getOrigin().getX() , trans.getOrigin().getY() , trans.getOrigin().getZ());
-		
+								transform1a->Update();
 								actor->SetUserTransform(transform1a);
 								renderWindow->Render();
 
@@ -164,27 +178,23 @@ int main (int argc, char * argv [])
     return EXIT_FAILURE;
 	}
 	//<leer>
-	vtkSmartPointer<vtkXMLGenericDataObjectReader> reader =
-    vtkSmartPointer<vtkXMLGenericDataObjectReader>::New();
-  reader->SetFileName(argv[1]);
+
+  /*  reader->SetFileName(argv[1]);
   reader->Update();
   //vtkPolyData * output;
-  
+
   if(vtkPolyData::SafeDownCast(reader->GetOutput()))
   {
     std::cout << "File is a polydata" << std::endl;
-    
+
   }
   else if(vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()))
   {
     std::cout << "File is an unstructured grid" << std::endl;
-    /*vtkSmartPointer<vtkGenericDataObjectReader> reader2 =
-      vtkSmartPointer<vtkGenericDataObjectReader>::New();
-		reader2->SetFileName(argv[1]);
-		reader2->Update();
-		output = reader2->GetPolyDataOutput();*/
+
+
   }
-  /*  vtkSmartPointer<vtkGenericDataObjectReader> reader =
+  vtkSmartPointer<vtkGenericDataObjectReader> reader =
       vtkSmartPointer<vtkGenericDataObjectReader>::New();
   reader->SetFileName(argv[1]);
   reader->Update();
@@ -196,9 +206,30 @@ int main (int argc, char * argv [])
     vtkPolyData* output = reader->GetPolyDataOutput();
     std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
   }*/
-  
-  vtkPolyData * output = reader->GetPolyDataOutput();
-  
+
+	reader2->SetFileName(argv[1]);
+	reader2->Update();
+
+	if(reader2->IsFilePolyData())
+     {
+     std::cout << "output is a polydata" << std::endl;
+    output = reader2->GetPolyDataOutput();
+     std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
+
+	 }else{
+		 vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
+    vtkSmartPointer<vtkUnstructuredGrid>::New();
+		geometryFilter->SetInputData(unstructuredGrid);
+  	geometryFilter->Update();
+		 surfaceFilter->SetInputData(unstructuredGrid);
+		 surfaceFilter->Update();
+		 std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
+		 output = surfaceFilter->GetOutput();
+	 }
+
+
+
+
     std::cout<<output->GetNumberOfPoints()<<std::endl;
   vtkSmartPointer<vtkNamedColors> colors =
     vtkSmartPointer<vtkNamedColors>::New();
@@ -214,8 +245,9 @@ int main (int argc, char * argv [])
   		cont++;
   		//std:: cout<<"Point "<<i<<": ("<<p[0]<<","<<p[1]<<","<<p[2]<<")"<<std::endl;
   }
-  mapper->SetInputConnection(reader->GetOutputPort());
-  
+
+  mapper->SetInputConnection(reader2->GetOutputPort());
+
   //</leer>
 
 	vtkSmartPointer<vtkAxesActor> axes =
@@ -223,31 +255,31 @@ int main (int argc, char * argv [])
     axes->SetTotalLength( 1, 1 , 1 );
     axes->SetTipTypeToUserDefined();
     axes->AxisLabelsOff();
-    
-    
+
+
   //mapper->SetInputConnection(coneSource->GetOutputPort());
 
-	
+
   actor->SetMapper(mapper);
 	actor->GetProperty()->SetColor(colors->GetColor3d("Moccasin").GetData());
-	
+
 	vtkSmartPointer<vtkTransform> transform1a =
     vtkSmartPointer<vtkTransform>::New();
   transform1a->PostMultiply();
   transform1a->Translate(0.0, 50.0, 0.0);
-  
+
   actor->SetUserTransform(transform1a);
-  
+
   renderWindow->AddRenderer(renderer);
   renderWindow->SetSize( 600, 600 );
-  
+
   renderWindowInteractor->SetRenderWindow(renderWindow);
- 
+
   //Add the actors to the scene
   renderer->AddActor(actor);
   renderer->AddActor(axes);
   renderer->SetBackground(colors->GetColor3d("SlateGray").GetData());
- 
+
  	pthread_t hilo;
 	int rc = pthread_create(&hilo, NULL, actualizar, NULL);
 	if (rc)
@@ -255,13 +287,12 @@ int main (int argc, char * argv [])
 		perror("Hola mundo");
 		exit(-1);
 	}
-	
+
   //Render and interact
   renderWindow->Render();
   renderWindowInteractor->Start();
 
-	
-	
+
+
   pthread_exit(NULL);
 }
-
