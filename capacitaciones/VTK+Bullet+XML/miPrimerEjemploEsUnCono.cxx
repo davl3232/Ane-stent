@@ -2,6 +2,8 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <vector>
+#include <fstream>
+
 
 #include <btBulletDynamicsCommon.h>
 
@@ -34,8 +36,8 @@
 std::vector <std::vector < double > > puntos;
 
 
-/*vtkSmartPointer<vtkXMLGenericDataObjectReader> reader =
-	vtkSmartPointer<vtkXMLGenericDataObjectReader>::New();*/
+vtkSmartPointer<vtkXMLGenericDataObjectReader> reader =
+	vtkSmartPointer<vtkXMLGenericDataObjectReader>::New();
 
 vtkSmartPointer<vtkSphereSource> coneSource =
 	vtkSmartPointer<vtkSphereSource>::New();
@@ -62,7 +64,7 @@ vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
 
 			vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
 		vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
-		
+
 		vtkSmartPointer<vtkGenericDataObjectReader> reader2 =
 		 vtkSmartPointer<vtkGenericDataObjectReader>::New();
 vtkPolyData * output;
@@ -177,78 +179,70 @@ int main (int argc, char * argv [])
 		std::cout << "Usage: " << argv[0] << " InputFilename" << std::endl;
     return EXIT_FAILURE;
 	}
-	//<leer>
+	//leer cualquier tipo de archivo
+	ifstream myReadFile;
+	 myReadFile.open(argv[1]);
+	 char file[100];
+	 if (myReadFile.is_open()) {
+    myReadFile >> file;
+		 	if(file[0] == '<'){
+				std::cout<<"xml"<<std::endl;
 
-  /*  reader->SetFileName(argv[1]);
-  reader->Update();
-  //vtkPolyData * output;
+			  reader->SetFileName(argv[1]);
+			  reader->Update();
 
-  if(vtkPolyData::SafeDownCast(reader->GetOutput()))
-  {
-    std::cout << "File is a polydata" << std::endl;
+				if(vtkPolyData::SafeDownCast(reader->GetOutput()))
+				{
+					std::cout << "File is a polydata" << std::endl;
 
-  }
-  else if(vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()))
-  {
-    std::cout << "File is an unstructured grid" << std::endl;
+				}
+				else if(vtkUnstructuredGrid::SafeDownCast(reader->GetOutput()))
+				{
+					std::cout << "File is an unstructured grid" << std::endl;
+			  }
+				output = reader->GetPolyDataOutput();
+				  mapper->SetInputConnection(reader->GetOutputPort());
+			}else{
+					std::cout<<"texto"<<std::endl;
+					reader2->SetFileName(argv[1]);
+					reader2->Update();
 
+					if(reader2->IsFilePolyData())
+				     {
+				     std::cout << "output is a polydata" << std::endl;
+				    output = reader2->GetPolyDataOutput();
+				     std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
 
-  }
-  vtkSmartPointer<vtkGenericDataObjectReader> reader =
-      vtkSmartPointer<vtkGenericDataObjectReader>::New();
-  reader->SetFileName(argv[1]);
-  reader->Update();
-
-  // All of the standard data types can be checked and obtained like this:
-  if(reader->IsFilePolyData())
-  {
-    std::cout << "output is a polydata" << std::endl;
-    vtkPolyData* output = reader->GetPolyDataOutput();
-    std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
-  }*/
-
-	reader2->SetFileName(argv[1]);
-	reader2->Update();
-
-	if(reader2->IsFilePolyData())
-     {
-     std::cout << "output is a polydata" << std::endl;
-    output = reader2->GetPolyDataOutput();
-     std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
-
-	 }else{
-		 vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
-    vtkSmartPointer<vtkUnstructuredGrid>::New();
-		geometryFilter->SetInputData(unstructuredGrid);
-  	geometryFilter->Update();
-		 surfaceFilter->SetInputData(unstructuredGrid);
-		 surfaceFilter->Update();
-		 std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
-		 output = surfaceFilter->GetOutput();
+					 }else{
+						 vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
+				    vtkSmartPointer<vtkUnstructuredGrid>::New();
+						geometryFilter->SetInputData(unstructuredGrid);
+				  	geometryFilter->Update();
+						 surfaceFilter->SetInputData(unstructuredGrid);
+						 surfaceFilter->Update();
+						 std::cout << "output has " << output->GetNumberOfPoints() << " points." << std::endl;
+						 output = surfaceFilter->GetOutput();
+					 }
+					  mapper->SetInputConnection(reader2->GetOutputPort());
+			}
 	 }
 
 
-
-
-    std::cout<<output->GetNumberOfPoints()<<std::endl;
-  vtkSmartPointer<vtkNamedColors> colors =
-    vtkSmartPointer<vtkNamedColors>::New();
-  int cont=0;
-  for(vtkIdType i =0; i<output->GetNumberOfPoints(); i++ ){
-  		double p[3];
-  		output ->GetPoint(i,p);
-  		std::vector <double> nuevo;
-  		nuevo.push_back(p[0]);
-  		nuevo.push_back(p[1]);
-  		nuevo.push_back(p[2]);
-  		puntos.push_back(nuevo);
-  		cont++;
-  		//std:: cout<<"Point "<<i<<": ("<<p[0]<<","<<p[1]<<","<<p[2]<<")"<<std::endl;
-  }
-
-  mapper->SetInputConnection(reader2->GetOutputPort());
-
-  //</leer>
+					    std::cout<<output->GetNumberOfPoints()<<std::endl;
+					  vtkSmartPointer<vtkNamedColors> colors =
+					    vtkSmartPointer<vtkNamedColors>::New();
+					  int cont=0;
+					  for(vtkIdType i =0; i<output->GetNumberOfPoints(); i++ ){
+					  		double p[3];
+					  		output ->GetPoint(i,p);
+					  		std::vector <double> nuevo;
+					  		nuevo.push_back(p[0]);
+					  		nuevo.push_back(p[1]);
+					  		nuevo.push_back(p[2]);
+					  		puntos.push_back(nuevo);
+					  		cont++;
+					  		//std:: cout<<"Point "<<i<<": ("<<p[0]<<","<<p[1]<<","<<p[2]<<")"<<std::endl;
+					  }
 
 	vtkSmartPointer<vtkAxesActor> axes =
     vtkSmartPointer<vtkAxesActor>::New();
