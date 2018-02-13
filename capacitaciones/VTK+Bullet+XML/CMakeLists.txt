@@ -6,30 +6,27 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
+include(FindBullet)
 
-
-INCLUDE_DIRECTORIES(
-/usr/local/include/bullet/
-)
-
-LINK_LIBRARIES(
- BulletDynamics BulletCollision LinearMath
-)
-
-
+add_definitions     ( ${BULLET_DEFINITIONS} )
+include_directories ( ${BULLET_INCLUDE_DIRS} )
+link_directories    ( ${BULLET_LIBRARY_DIRS} )
+message(STATUS "${BULLET_FOUND}")
+message(STATUS "${BULLET_INCLUDE_DIRS}")
+message(STATUS "${BULLET_LIBRARIES}")
 
 IF (WIN32)
 	ADD_EXECUTABLE(miPrimerEjemploEsUnCono 
 		miPrimerEjemploEsUnCono.cxx
-		${BULLET_PHYSICS_SOURCE_DIR}/usr/include/bullet
-		target_link_libraries(miPrimerEjemploEsUnCono ${VTK_LIBRARIES})
+		${BULLET_PHYSICS_SOURCE_DIR}
+		target_link_libraries(miPrimerEjemploEsUnCono ${VTK_LIBRARIES} ${BULLET_LIBRARIES})
 
 	)
 ELSE()
 	ADD_EXECUTABLE(miPrimerEjemploEsUnCono 
 		miPrimerEjemploEsUnCono.cxx
 	)
-	target_link_libraries(miPrimerEjemploEsUnCono ${VTK_LIBRARIES})
+	target_link_libraries(miPrimerEjemploEsUnCono ${VTK_LIBRARIES} ${BULLET_LIBRARIES})
 	
 
 ENDIF()
