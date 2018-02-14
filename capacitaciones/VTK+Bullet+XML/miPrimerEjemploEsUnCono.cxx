@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <vector>
 #include <fstream>
+#include <stdlib.h>
+#include <cmath>
 
 
 #include <btBulletDynamicsCommon.h>
@@ -132,20 +134,22 @@ void * actualizar(void * att)
 								//actor->SetPosition(0.0,trans.getOrigin().getY(),0.0);
 
 
-								btQuaternion rotado = trans.getRotation();
+
 
 								vtkSmartPointer<vtkTransform> transform1a =
 									vtkSmartPointer<vtkTransform>::New();
 								transform1a->PostMultiply();
 
-
-								transform1a->RotateWXYZ(rotado.getAngle(),rotado.getAxis().getX(),rotado.getAxis().getY(),rotado.getAxis().getZ());
 								transform1a->Translate(trans.getOrigin().getX() , trans.getOrigin().getY() , trans.getOrigin().getZ());
+								btQuaternion rotado = trans.getRotation();
+								std::cout << "rotation: " << rotado.getAngle() << " " << rotado.getAxis().getX() << " " << rotado.getAxis().getY() << " " << rotado.getAxis().getZ() << std::endl;
+								transform1a->RotateWXYZ(std::abs(rotado.getAngle()),std::abs(rotado.getAxis().getX()),std::abs(rotado.getAxis().getY()),std::abs(rotado.getAxis().getZ()));
 								transform1a->Update();
 								actor->SetUserTransform(transform1a);
+
 								renderWindow->Render();
 
-                //std::cout << "rotation: " << rotado.getAngle() << " " << rotado.getAxis().getX() << " " << rotado.getAxis().getY() << " " << rotado.getAxis().getZ() << std::endl;
+
                 usleep(1000);
         }
 
@@ -184,7 +188,7 @@ int main (int argc, char * argv [])
 	 myReadFile.open(argv[1]);
 	 char file[100];
 	 if (myReadFile.is_open()) {
-    myReadFile >> file;
+   			 myReadFile >> file;
 		 	if(file[0] == '<'){
 				std::cout<<"xml"<<std::endl;
 
@@ -228,7 +232,7 @@ int main (int argc, char * argv [])
 	 }
 
 
-					    std::cout<<output->GetNumberOfPoints()<<std::endl;
+					  std::cout<<output->GetNumberOfPoints()<<std::endl;
 					  vtkSmartPointer<vtkNamedColors> colors =
 					    vtkSmartPointer<vtkNamedColors>::New();
 					  int cont=0;
@@ -255,15 +259,14 @@ int main (int argc, char * argv [])
 
 
   actor->SetMapper(mapper);
-	actor->GetProperty()->SetColor(colors->GetColor3d("Moccasin").GetData());
+  actor->GetProperty()->SetColor(colors->GetColor3d("Moccasin").GetData());
 
 	vtkSmartPointer<vtkTransform> transform1a =
     vtkSmartPointer<vtkTransform>::New();
   transform1a->PostMultiply();
-  transform1a->Translate(0.0, 50.0, 0.0);
+  transform1a->Translate(-20.0, 50.0, -20.0);
 
   actor->SetUserTransform(transform1a);
-
   renderWindow->AddRenderer(renderer);
   renderWindow->SetSize( 600, 600 );
 

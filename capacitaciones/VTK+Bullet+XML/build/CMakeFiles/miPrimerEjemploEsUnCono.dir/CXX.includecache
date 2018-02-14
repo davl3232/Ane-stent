@@ -17,6 +17,10 @@ vector
 -
 fstream
 -
+stdlib.h
+-
+cmath
+-
 btBulletDynamicsCommon.h
 -
 vtkVersion.h
