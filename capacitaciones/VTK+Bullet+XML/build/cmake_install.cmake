@@ -1,4 +1,4 @@
-# Install script for directory: /home/tepha/Ane-stent/capacitaciones/VTK+Bullet+XML
+# Install script for directory: /home/jose/Tesis/Ane-stent/capacitaciones/VTK+Bullet+XML
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/tepha/Ane-stent/capacitaciones/VTK+Bullet+XML/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/jose/Tesis/Ane-stent/capacitaciones/VTK+Bullet+XML/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

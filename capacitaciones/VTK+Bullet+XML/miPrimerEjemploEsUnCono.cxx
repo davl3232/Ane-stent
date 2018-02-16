@@ -141,12 +141,27 @@ void * actualizar(void * att)
 								transform1a->PostMultiply();
 
 								transform1a->Translate(trans.getOrigin().getX() , trans.getOrigin().getY() , trans.getOrigin().getZ());
-								btQuaternion rotado = trans.getRotation();
-								std::cout << "rotation: " << rotado.getAngle() << " " << rotado.getAxis().getX() << " " << rotado.getAxis().getY() << " " << rotado.getAxis().getZ() << std::endl;
-								transform1a->RotateWXYZ(std::abs(rotado.getAngle()),std::abs(rotado.getAxis().getX()),std::abs(rotado.getAxis().getY()),std::abs(rotado.getAxis().getZ()));
+								//std::cout << "rotation: " << rotado.getAngle() << " " << rotado.getAxis().getX() << " " << rotado.getAxis().getY() << " " << rotado.getAxis().getZ() << std::endl;
+								//transform1a->RotateWXYZ(std::abs(rotado.getAngle()),std::abs(rotado.getAxis().getX()),std::abs(rotado.getAxis().getY()),std::abs(rotado.getAxis().getZ()));
 								transform1a->Update();
 								actor->SetUserTransform(transform1a);
 
+								btQuaternion rotado = trans.getRotation();
+								
+								double w = rotado.getW();
+								double x = rotado.getX();
+								double y = rotado.getY();
+								double z = rotado.getZ();
+								double x1,x2,x3;
+								double sqw = w*w; double sqx = x*x; double sqy = y*y; double sqz = z*z;
+								x3=((atan2(2.0 * (x*y + z*w),(sqx - sqy - sqz + sqw))));
+								x1=((atan2(2.0 * (y*z + x*w),(-sqx - sqy + sqz + sqw))));
+								x2=((asin(-2.0 * (x*z - y*w))));
+								
+								actor->RotateX(x1);
+								actor->RotateY(x2);
+								actor->RotateZ(x3);								
+								
 								renderWindow->Render();
 
 
