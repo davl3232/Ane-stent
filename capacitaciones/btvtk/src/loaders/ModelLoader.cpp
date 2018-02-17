@@ -99,6 +99,8 @@ std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
     polyData = surfaceFilter->GetOutput();
     std::cout << polyData->GetNumberOfPoints() << std::endl;
   }
+  polyData = reader->GetPolyDataOutput();
+  std::cout << polyData->GetNumberOfPoints() << std::endl;
 
   // Crear actor
   std::cout << "\tCreando actor...";
@@ -107,7 +109,7 @@ std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
       vtkSmartPointer<vtkDataSetMapper>::New();
   mapper->SetInputConnection(reader->GetOutputPort());
   vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-
+actor->SetMapper(mapper);
   std::cout << "Terminado." << std::endl;
 
   // Crear colisionador
