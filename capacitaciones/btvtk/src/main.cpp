@@ -9,11 +9,17 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
+#include <vtkNamedColors.h>
+
 
 #include "loaders/ModelLoader.h"
 #include "scene/SceneObject.h"
 
 int main(int argc, char **argv) {
+  vtkSmartPointer<vtkNamedColors> colors =
+			vtkSmartPointer<vtkNamedColors>::New();
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+      vtkSmartPointer<vtkRenderWindowInteractor>::New();
   if (argc < 2) {
     std::cout << "Usage: " << argv[0] << " InputFilename" << std::endl;
     return EXIT_FAILURE;
@@ -34,7 +40,7 @@ int main(int argc, char **argv) {
   axes->AxisLabelsOff();
 
   renderer->AddActor(axes);
-
+  renderer->SetBackground(colors->GetColor3d("SlateGray").GetData());
   // Agregar actor de objeto
   std::cout << "Cargando actores...";
   double color[3] = {1, 1, 1};
@@ -47,8 +53,7 @@ int main(int argc, char **argv) {
   renderer->SetBackground(0, 0, 0); // Background color dark red
 
   // Renderizar e interactuar
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-      vtkSmartPointer<vtkRenderWindowInteractor>::New();
+
   renderWindowInteractor->SetRenderWindow(renderWindow);
   renderWindowInteractor->Start();
 

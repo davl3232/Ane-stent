@@ -31,8 +31,7 @@ createConvexHullCollider(vtkSmartPointer<vtkPolyData> polyData) {
     nuevo[1] = (p[1]);
     nuevo[2] = (p[2]);
 
-    std::cout << "Point " << i << ":(" << p[0] << "," << p[1] << "," << p[2]
-              << ")" << std::endl;
+    
 
     puntos.push_back(nuevo);
   }
@@ -42,6 +41,8 @@ createConvexHullCollider(vtkSmartPointer<vtkPolyData> polyData) {
   for (int i = 0; i < puntos.size(); i++) {
     convexHullShape->addPoint(
         btVector3(puntos[i][0], puntos[i][1], puntos[i][2]));
+        std::cout << "Point " << i << ":(" << puntos[i][0] << "," <<  puntos[i][1]<< "," 
+              << ")" << std::endl;
   }
 
   return convexHullShape;
@@ -165,7 +166,7 @@ std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
       vtkSmartPointer<vtkDataSetMapper>::New();
   mapper->SetInputConnection(reader->GetOutputPort());
   vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-
+  actor->SetMapper(mapper);
   std::cout << "Terminado." << std::endl;
 
   // Crear colisionador
@@ -176,7 +177,7 @@ std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
 
   std::cout << "Terminado." << std::endl;
 
-  // Crear SceneObject
+  // Crear SceneObjects
   std::cout << "\tCreando SceneObject...";
 
   std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
