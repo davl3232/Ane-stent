@@ -1,0 +1,16 @@
+{
+    "files.associations": {
+        "__locale": "cpp",
+        "iosfwd": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "typeinfo": "cpp",
+        "fstream": "cpp",
+        "memory": "cpp",
+        "string": "cpp"
+    }
+}
