@@ -40,13 +40,13 @@ int main(int argc, char **argv) {
   double color[3] = {1, 1, 1};
   object->actor->GetProperty()->SetColor(color);
 
+  renderWindow->Render();
   renderer->AddActor(object->actor);
   std::cout << "Finalizado" << std::endl;
 
   renderer->SetBackground(0, 0, 0); // Background color dark red
 
   // Renderizar e interactuar
-  renderWindow->Render();
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
   renderWindowInteractor->SetRenderWindow(renderWindow);
