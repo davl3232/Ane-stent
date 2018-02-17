@@ -1,3 +1,0 @@
-/home/jose/Tesis/Ane-stent/capacitaciones/VTK+Bullet+XML/build/CMakeFiles/edit_cache.dir
-/home/jose/Tesis/Ane-stent/capacitaciones/VTK+Bullet+XML/build/CMakeFiles/rebuild_cache.dir
-/home/jose/Tesis/Ane-stent/capacitaciones/VTK+Bullet+XML/build/CMakeFiles/miPrimerEjemploEsUnCono.dir
