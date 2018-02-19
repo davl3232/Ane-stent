@@ -7,8 +7,10 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 include(FindBullet)
 
-include_directories ( ${BULLET_INCLUDE_DIRS} )
-link_directories    ( ${BULLET_LIBRARY_DIRS} )
+message(${VTK_INCLUDE_DIRS})
+
+include_directories(${BULLET_INCLUDE_DIRS})
+link_directories(${BULLET_LIBRARY_DIRS})
 
 ADD_EXECUTABLE(main 
 	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneObject.cpp
