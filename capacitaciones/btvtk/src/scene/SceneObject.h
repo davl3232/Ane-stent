@@ -10,10 +10,16 @@
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
 
-class SceneObject {
+/**
+ * @brief Contiene la información necesaria para simular la física de un objeto
+ * Bullet y renderizarlo con VTK.
+ */
+class SceneObject : public std::enable_shared_from_this<SceneObject> {
  public:
+  std::string name;
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btCollisionShape> collider;
+  std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btRigidBody> rigidBody;
 
   SceneObject(vtkSmartPointer<vtkActor> actor,
@@ -22,7 +28,7 @@ class SceneObject {
               std::shared_ptr<btCollisionShape> collider,
               std::shared_ptr<btRigidBody> rigidBody);
   ~SceneObject();
-  std::shared_ptr<btRigidBody> SceneObject::UpdateRigidBody(btScalar mass = 1);
-  void PhysicsUpdate(std::chrono::duration<double> deltaTime);
+  void UpdateRigidBody(btScalar mass = 0);
+  void UpdatePhysics(std::chrono::duration<double> deltaTime);
 };
 #endif

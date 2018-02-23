@@ -7,9 +7,11 @@
 #include <string>
 
 class ModelLoader {
-public:
+ public:
   static std::shared_ptr<SceneObject> LoadTXT(std::string fileName);
   static std::shared_ptr<SceneObject> LoadXML(std::string fileName);
   static std::shared_ptr<SceneObject> Load(std::string fileName);
+  static std::shared_ptr<SceneObject> Load(
+      std::vector<std::vector<double>> puntos, std::string name = "strip");
 };
 #endif

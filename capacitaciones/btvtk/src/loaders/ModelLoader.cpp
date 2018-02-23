@@ -14,36 +14,41 @@
 #include <vtkGeometryFilter.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
+#include <vtkTriangleStrip.h>
 #include <vtkUnstructuredGrid.h>
 #include <vtkXMLGenericDataObjectReader.h>
 
-std::shared_ptr<btCollisionShape>
-createConvexHullCollider(vtkSmartPointer<vtkPolyData> polyData) {
-  std::vector<std::vector<double>> puntos;
+std::shared_ptr<btCollisionShape> createConvexHullCollider(
+    std::vector<std::vector<double>> vertices) {
+  // Meter puntos en colisionador
+  std::shared_ptr<btConvexHullShape> convexHullShape(new btConvexHullShape());
+  for (int i = 0; i < vertices.size(); i++) {
+    convexHullShape->addPoint(
+        btVector3(vertices[i][0], vertices[i][1], vertices[i][2]));
+    std::cout << "Point " << i << ":(" << vertices[i][0] << ","
+              << vertices[i][1] << "," << vertices[i][2] << ")" << std::endl;
+  }
+
+  return convexHullShape;
+}
+std::shared_ptr<btCollisionShape> createConvexHullCollider(
+    vtkSmartPointer<vtkPolyData> polyData) {
+  std::vector<std::vector<double>> vertices;
 
   // Extraer puntos del PolyData
   for (vtkIdType i = 0; i < polyData->GetNumberOfPoints(); i++) {
     double p[3];
     polyData->GetPoint(i, p);
 
-    std::vector<double> nuevo(3, 0);
-    nuevo[0] = (p[0]);
-    nuevo[1] = (p[1]);
-    nuevo[2] = (p[2]);
+    std::vector<double> np(3, 0);
+    np[0] = (p[0]);
+    np[1] = (p[1]);
+    np[2] = (p[2]);
 
-    puntos.push_back(nuevo);
+    vertices.push_back(np);
   }
 
-  // Meter puntos en colisionador
-  std::shared_ptr<btConvexHullShape> convexHullShape(new btConvexHullShape());
-  for (int i = 0; i < puntos.size(); i++) {
-    convexHullShape->addPoint(
-        btVector3(puntos[i][0], puntos[i][1], puntos[i][2]));
-    std::cout << "Point " << i << ":(" << puntos[i][0] << "," << puntos[i][1]
-              << "," << puntos[i][2] << ")" << std::endl;
-  }
-
-  return convexHullShape;
+  return createConvexHullCollider(vertices);
 }
 
 std::shared_ptr<SceneObject> ModelLoader::Load(std::string fileName) {
@@ -64,6 +69,60 @@ std::shared_ptr<SceneObject> ModelLoader::Load(std::string fileName) {
     }
   }
   return NULL;
+}
+
+std::shared_ptr<SceneObject> ModelLoader::Load(
+    std::vector<std::vector<double>> vertices, std::string name) {
+  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+  for (size_t i = 0; i < vertices.size(); i++) {
+    points->InsertNextPoint(0, 0, 0);
+  }
+
+  vtkSmartPointer<vtkTriangleStrip> triangleStrip =
+      vtkSmartPointer<vtkTriangleStrip>::New();
+  triangleStrip->GetPointIds()->SetNumberOfIds(4);
+  triangleStrip->GetPointIds()->SetId(0, 0);
+  triangleStrip->GetPointIds()->SetId(1, 1);
+  triangleStrip->GetPointIds()->SetId(2, 2);
+  triangleStrip->GetPointIds()->SetId(3, 3);
+
+  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
+  cells->InsertNextCell(triangleStrip);
+
+  vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
+  polyData->SetPoints(points);
+  polyData->SetStrips(cells);
+
+  std::cout << polyData->GetNumberOfPoints() << std::endl;
+
+  // Crear actor
+  std::cout << "\tCreando actor...";
+
+  vtkSmartPointer<vtkDataSetMapper> mapper =
+      vtkSmartPointer<vtkDataSetMapper>::New();
+  mapper->SetInputData(polyData);
+  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+  actor->SetMapper(mapper);
+  std::cout << "Terminado." << std::endl;
+
+  // Crear colisionador
+  std::cout << "\tCreando colisionador...";
+
+  std::shared_ptr<btCollisionShape> convexHullShape(
+      createConvexHullCollider(polyData));
+
+  std::cout << "Terminado." << std::endl;
+
+  // Crear SceneObject
+  std::cout << "\tCreando SceneObject...";
+
+  std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
+  object->UpdateRigidBody(1);
+  object->name = name;
+
+  std::cout << "Terminado." << std::endl;
+
+  return object;
 }
 
 std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
@@ -122,6 +181,8 @@ std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
   std::cout << "\tCreando SceneObject...";
 
   std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
+  object->UpdateRigidBody(1);
+  object->name = fileName;
 
   std::cout << "Terminado." << std::endl;
 
@@ -181,6 +242,8 @@ std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
   std::cout << "\tCreando SceneObject...";
 
   std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
+  object->UpdateRigidBody(1);
+  object->name = fileName;
 
   std::cout << "Terminado." << std::endl;
 

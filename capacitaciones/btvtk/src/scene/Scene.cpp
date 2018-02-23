@@ -3,31 +3,61 @@
 #include <btBulletDynamicsCommon.h>
 
 #include <vtkAxesActor.h>
+#include <vtkCamera.h>
 #include <vtkNamedColors.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
 
 #include <chrono>
 #include <memory>
 
-Scene::Scene() {
-  this->Init();
-  this->backgroundColor[0] = 0;
-  this->backgroundColor[1] = 0;
-  this->backgroundColor[2] = 0;
-}
+class vtkTimerCallback : public vtkCommand {
+ public:
+  std::shared_ptr<Scene> data;
+
+  static vtkTimerCallback *New() {
+    vtkTimerCallback *cb = new vtkTimerCallback;
+    cb->TimerCount = 0;
+    cb->deltaTime = std::chrono::duration<double>(1. / 60);
+    return cb;
+  }
+
+  virtual void Execute(vtkObject *vtkNotUsed(caller), unsigned long eventId,
+                       void *vtkNotUsed(callData)) {
+    if (vtkCommand::TimerEvent == eventId) {
+      // Medir tiempo.
+      this->newTime = std::chrono::steady_clock::now();
+
+      // Calcular tiempo transcurrido.
+      this->deltaTime = this->newTime - this->prevTime;
+
+      data->Update(deltaTime);
+
+      // Reiniciar tiempo.
+      prevTime = newTime;
+
+      ++this->TimerCount;
+    }
+  }
+
+ private:
+  int TimerCount;
+  std::chrono::time_point<std::chrono::steady_clock> prevTime;
+  std::chrono::time_point<std::chrono::steady_clock> newTime;
+  std::chrono::duration<double> deltaTime;
+};
+Scene::Scene() { this->Init(); }
 Scene::~Scene() {
   for (size_t i = 0; i < this->objects.size(); i++) {
     std::shared_ptr<SceneObject> sceneObject = this->objects[i];
     this->dynamicsWorld->removeRigidBody(sceneObject->rigidBody.get());
   }
 }
-
 void Scene::Init() {
   this->InitPhysics();
   this->InitGraphics();
-  this->Loop();
 }
 void Scene::InitPhysics() {
   // Algoritmo de emparejamiento de colisionadores (Broadphase).
@@ -65,68 +95,77 @@ void Scene::InitPhysics() {
   }
 }
 void Scene::InitGraphics() {
-  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
-      vtkSmartPointer<vtkRenderWindowInteractor>::New();
-
   // Crear Renderer, RenderWindow y RenderWindowInteractor.
   vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
   vtkSmartPointer<vtkRenderWindow> renderWindow =
       vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->SetSize(1000, 1000);
   renderWindow->AddRenderer(renderer);
+  vtkSmartPointer<vtkCamera> camera = vtkSmartPointer<vtkCamera>::New();
+  camera->SetPosition(0, 1, 2);
+  camera->SetFocalPoint(0, 0, 0);
+  camera->SetClippingRange(0.1, 10000);
+  renderer->SetActiveCamera(camera);
 
   // Crear y agregar ejes.
   vtkSmartPointer<vtkAxesActor> axes = vtkSmartPointer<vtkAxesActor>::New();
-  axes->SetTotalLength(2, 2, 2);
-  axes->SetTipTypeToUserDefined();
+  axes->SetTotalLength(1, 1, 1);
   axes->AxisLabelsOff();
 
   renderer->AddActor(axes);
-  renderer->SetBackground(this->backgroundColor);
 
-  // Agregar actores.
-  std::cout << "Cargando actores...";
-
-  // Agregar objetos a la lista de rigidBodies.
+  // Agregar actores al renderer.
   for (size_t i = 0; i < this->objects.size(); i++) {
     std::shared_ptr<SceneObject> sceneObject = this->objects[i];
     renderer->AddActor(sceneObject->actor);
   }
 
-  std::cout << "Finalizado" << std::endl;
-
   // Renderizar e interactuar.
   renderWindow->Render();
-  renderWindowInteractor->SetRenderWindow(renderWindow);
-  renderWindowInteractor->Start();
+  this->renderWindowInteractor =
+      vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  this->renderWindowInteractor->SetRenderWindow(renderWindow);
 }
 void Scene::Loop() {
-  // Medir tiempo.
-  std::chrono::time_point<std::chrono::steady_clock> prevTime =
-      std::chrono::steady_clock::now();
-  std::chrono::time_point<std::chrono::steady_clock> newTime;
-  std::chrono::duration<double> deltaTime(1. / 60);
+  // Initialize must be called prior to creating timer events.
+  renderWindowInteractor->Initialize();
 
-  for (unsigned long i = 0; i < 600; i++) {
-    // Medir tiempo.
-    newTime = std::chrono::steady_clock::now();
+  // Sign up to receive TimerEvent
+  vtkSmartPointer<vtkTimerCallback> callback =
+      vtkSmartPointer<vtkTimerCallback>::New();
+  callback->data = std::shared_ptr<Scene>(this);
+  renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
 
-    // Calcular tiempo transcurrido.
-    deltaTime = newTime - prevTime;
+  int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
 
-    this->Update(deltaTime);
-
-    // Reiniciar tiempo.
-    prevTime = newTime;
-  }
+  this->renderWindowInteractor->Start();
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {
-  this->PhysicsUpdate(deltaTime);
+  this->UpdatePhysics(deltaTime);
+  this->renderWindowInteractor->GetRenderWindow()->Render();
 }
-void Scene::PhysicsUpdate(std::chrono::duration<double> deltaTime) {
+void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
 
   // Llamar actualización de física de cada objeto.
   for (size_t i = 0; i < this->objects.size(); i++) {
-    this->objects[i]->PhysicsUpdate(deltaTime);
+    this->objects[i]->UpdatePhysics(deltaTime);
   }
+}
+void Scene::AddObject(std::shared_ptr<SceneObject> object) {
+  this->objects.push_back(object);
+  this->dynamicsWorld->addRigidBody(object->rigidBody.get());
+  this->renderWindowInteractor->GetRenderWindow()
+      ->GetRenderers()
+      ->GetFirstRenderer()
+      ->AddActor(object->actor);
+}
+std::vector<std::shared_ptr<SceneObject>> Scene::GetObjects() {
+  return this->objects;
+}
+void Scene::SetBackgroundColor(double r, double g, double b) {
+  this->renderWindowInteractor->GetRenderWindow()
+      ->GetRenderers()
+      ->GetFirstRenderer()
+      ->SetBackground(r, g, b);
 }

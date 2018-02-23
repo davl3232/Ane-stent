@@ -4,13 +4,17 @@
 #include <memory>
 #include <vector>
 
+#include <vtkRenderWindowInteractor.h>
+
 #include "SceneObject.h"
 
 class Scene {
- public:
-  double backgroundColor[3];
-  std::shared_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
+ private:
   std::vector<std::shared_ptr<SceneObject>> objects;
+
+ public:
+  std::shared_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
 
   Scene();
   ~Scene();
@@ -19,8 +23,9 @@ class Scene {
   void InitGraphics();
   void Loop();
   void Update(std::chrono::duration<double> deltaTime);
-  void PhysicsUpdate(std::chrono::duration<double> deltaTime);
+  void UpdatePhysics(std::chrono::duration<double> deltaTime);
+  void AddObject(std::shared_ptr<SceneObject> object);
+  std::vector<std::shared_ptr<SceneObject>> GetObjects();
   void SetBackgroundColor(double r, double g, double b);
-}
-
-#endif  // !SCENE_H
+};
+#endif
