@@ -51,6 +51,9 @@ int main(int argc, char **argv) {
   for (size_t i = 1; i < argc; i++) {
     std::shared_ptr<SceneObject> object =
         ModelLoader::Load(std::string(argv[i]));
+    vtkSmartPointer<vtkTransform> trans = vtkSmartPointer<vtkTransform>::New();
+    trans->Translate(0, 2, 0);
+    object->actor->SetUserTransform(trans);
     scene->AddObject(object);
   }
   scene->Loop();

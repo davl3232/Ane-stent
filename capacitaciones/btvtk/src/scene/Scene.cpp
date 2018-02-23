@@ -4,6 +4,7 @@
 
 #include <vtkAxesActor.h>
 #include <vtkCamera.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkNamedColors.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
@@ -122,8 +123,16 @@ void Scene::InitGraphics() {
 
   // Renderizar e interactuar.
   renderWindow->Render();
+
+  vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
+      vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();  // like
+                                                                  // paraview
+
   this->renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
+
+  this->renderWindowInteractor->SetInteractorStyle(style);
+
   this->renderWindowInteractor->SetRenderWindow(renderWindow);
 }
 void Scene::Loop() {
