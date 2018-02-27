@@ -122,7 +122,7 @@ void Scene::InitGraphics() {
   }
 
   // Renderizar e interactuar.
-  renderWindow->Render();
+  //renderWindow->Render();
 
   vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
       vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();  // like
