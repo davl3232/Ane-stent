@@ -121,9 +121,6 @@ void Scene::InitGraphics() {
     renderer->AddActor(sceneObject->actor);
   }
 
-  // Renderizar e interactuar.
-  //renderWindow->Render();
-
   vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
       vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();  // like
                                                                   // paraview
