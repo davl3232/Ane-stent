@@ -100,7 +100,7 @@ void Scene::InitGraphics() {
   vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
   vtkSmartPointer<vtkRenderWindow> renderWindow =
       vtkSmartPointer<vtkRenderWindow>::New();
-  renderWindow->SetSize(1000, 1000);
+  renderWindow->SetSize(768, 768);
   renderWindow->AddRenderer(renderer);
   vtkSmartPointer<vtkCamera> camera = vtkSmartPointer<vtkCamera>::New();
   camera->SetPosition(0, 1, 2);
