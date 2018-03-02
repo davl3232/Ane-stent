@@ -16,7 +16,7 @@
 
 class vtkTimerCallback : public vtkCommand {
  public:
-  std::shared_ptr<Scene> data;
+  std::shared_ptr<Scene> scene;
 
   static vtkTimerCallback *New() {
     vtkTimerCallback *cb = new vtkTimerCallback;
@@ -34,7 +34,7 @@ class vtkTimerCallback : public vtkCommand {
       // Calcular tiempo transcurrido.
       this->deltaTime = this->newTime - this->prevTime;
 
-      data->Update(deltaTime);
+      scene->Update(deltaTime);
 
       // Reiniciar tiempo.
       prevTime = newTime;
@@ -139,7 +139,7 @@ void Scene::Loop() {
   // Sign up to receive TimerEvent
   vtkSmartPointer<vtkTimerCallback> callback =
       vtkSmartPointer<vtkTimerCallback>::New();
-  callback->data = std::shared_ptr<Scene>(this);
+  callback->scene = std::shared_ptr<Scene>(this);
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
 
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
