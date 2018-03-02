@@ -2,6 +2,10 @@
 
 #include <btBulletDynamicsCommon.h>
 
+#include "BulletSoftBody/btSoftBodyHelpers.h"
+#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
 #include <vtkAxesActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleTrackballCamera.h>
@@ -67,7 +71,7 @@ void Scene::InitPhysics() {
 
   // Configuración de detección de colisiones entre dos pares y el despachador.
   btDefaultCollisionConfiguration *collisionConfiguration =
-      new btDefaultCollisionConfiguration();
+      new btSoftBodyRigidBodyCollisionConfiguration();
   // Soporta colisiones convex-convex y convex-concave.
   btCollisionDispatcher *dispatcher =
       new btCollisionDispatcher(collisionConfiguration);
@@ -83,7 +87,7 @@ void Scene::InitPhysics() {
   // Instanciar el mundo con el despachador, el algoritmo de broadphase, el
   // solucionador y la configuacion de colisiones.
   this->dynamicsWorld =
-      std::shared_ptr<btDiscreteDynamicsWorld>(new btDiscreteDynamicsWorld(
+      std::shared_ptr<btDiscreteDynamicsWorld>(new btSoftRigidDynamicsWorld(
           dispatcher, broadphase, solver, collisionConfiguration));
 
   // Se aplica gravedad sobre el eje y.

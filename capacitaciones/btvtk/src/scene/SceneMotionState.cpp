@@ -3,6 +3,7 @@
 #include <vtkActor.h>
 #include <vtkTransform.h>
 
+#include "../util/ToString.h"
 #include "SceneObject.h"
 
 SceneMotionState::SceneMotionState(std::shared_ptr<SceneObject> sceneObject,
@@ -25,44 +26,17 @@ void SceneMotionState::setWorldTransform(const btTransform &worldTrans) {
   std::cout << "===================================" << std::endl;
   std::cout << "Bullet:" << std::endl;
   std::cout << "===================================" << std::endl;
-  std::cout << "Mat: {";
+  std::cout << ToString::MatArr(btTransMat) << std::endl;
   for (size_t i = 0; i < 16; i++) {
-    if (i % 4 == 0) {
-      std::cout << std::endl;
-    } else {
-      std::cout << ',';
-    }
     vtkTransMat[i / 4 + 4 * (i % 4)] = btTransMat[i];
-    std::cout << btTransMat[i];
   }
-  std::cout << std::endl;
-  std::cout << "}" << std::endl;
+
+  std::cout << "===================================" << std::endl;
+  std::cout << "VTK:" << std::endl;
+  std::cout << "===================================" << std::endl;
+  std::cout << ToString::MatArr(vtkTransMat) << std::endl;
   vtkTrans->SetMatrix(vtkTransMat);
-  // btVector3 btOrigin = worldTrans.getOrigin();
-  // vtkTrans->Translate(btOrigin.x(), btOrigin.y(), btOrigin.z());
-  // vtkTrans->Update();
-  // btQuaternion btRotation = worldTrans.getRotation();
-  // btQuaternion btRotation = worldTrans.getRotation();
   if (auto object = this->sceneObject.lock()) {
-    // vtkSmartPointer<vtkMatrix4x4> mat = object->actor->GetUserMatrix();
-    // double *vtkMat = mat->GetData();
-    std::cout << "===================================" << std::endl;
-    std::cout << "VTK:" << std::endl;
-    std::cout << "===================================" << std::endl;
-    std::cout << "Mat: {";
-    for (size_t i = 0; i < 16; i++) {
-      if (i % 4 == 0) {
-        std::cout << std::endl;
-      } else {
-        std::cout << ',';
-      }
-      std::cout << vtkTransMat[i];
-    }
-    std::cout << std::endl;
-    std::cout << "}" << std::endl;
-    // object->actor->SetOrigin(btOrigin.x(), btOrigin.y(), btOrigin.z());
-    // object->actor->SetPosition(btOrigin.x(), btOrigin.y(), btOrigin.z());
-    // object->actor->SetOrientation(btRotation.);
     object->actor->SetUserTransform(vtkTrans);
   }
 }
