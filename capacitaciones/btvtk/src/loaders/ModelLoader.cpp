@@ -13,6 +13,7 @@
 #include <vtkGenericDataObjectReader.h>
 #include <vtkGeometryFilter.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 #include <vtkTriangleStrip.h>
 #include <vtkUnstructuredGrid.h>
@@ -247,5 +248,33 @@ std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
 
   std::cout << "Terminado." << std::endl;
 
+  return object;
+}
+
+std::shared_ptr<SceneObject> ModelLoader::LoadSoftBody(std::string fileName) {
+  std::shared_ptr<SceneObject> object = ModelLoader::Load(fileName);
+
+  btAlignedObjectArray<btScalar> vertices;
+  btAlignedObjectArray<int> indices;
+
+  // loop through all the shapes and add vertices and indices
+  int offset = 0;
+
+  vtkSmartPointer<vtkPolyDataMapper> polyData = object->actor->GetMapper();
+
+  // add vertices
+  for (int j = 0; j < mesh.positions.size(); ++j) {
+    vertices.push_back(shape.mesh.positions[j]);
+  }
+
+  // add indices
+  for (int j = 0; j < shape.mesh.indices.size(); ++j) {
+    indices.push_back(offset + shape.mesh.indices[j]);
+  }
+  offset += shape.mesh.positions.size();
+  printf(
+      "[INFO] Obj loaded: Extracted %d vertices, %d indices from obj file "
+      "[%s]\n",
+      vertices.size(), indices.size(), fileName);
   return object;
 }

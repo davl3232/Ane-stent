@@ -14,5 +14,7 @@ class ModelLoader {
   static std::shared_ptr<SceneObject> Load(std::string fileName);
   static std::shared_ptr<SceneObject> Load(
       std::vector<std::vector<double> > puntos, std::string name = "strip");
+  static std::shared_ptr<SceneObject> ModelLoader::LoadSoftBody(
+      std::string fileName);
 };
 #endif
