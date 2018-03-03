@@ -107,9 +107,9 @@ void Scene::InitGraphics() {
   renderWindow->SetSize(768, 768);
   renderWindow->AddRenderer(renderer);
   vtkSmartPointer<vtkCamera> camera = vtkSmartPointer<vtkCamera>::New();
-  camera->SetPosition(0, 1, 2);
+  camera->SetPosition(0, 10, 50);
   camera->SetFocalPoint(0, 0, 0);
-  camera->SetClippingRange(0.1, 10000);
+  camera->SetClippingRange(0.1, 100000);
   renderer->SetActiveCamera(camera);
 
   // Crear y agregar ejes.
