@@ -20,9 +20,9 @@ class SceneSoftObject {
   std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btSoftBody> softBody;
 
-
-  SceneSoftObject();
+  SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
+  void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btScalar mass);
 };
 
 #endif  // !SCENE_SOFT_OBJECT_H

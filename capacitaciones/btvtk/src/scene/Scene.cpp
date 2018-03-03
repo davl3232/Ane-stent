@@ -2,7 +2,6 @@
 
 #include <btBulletDynamicsCommon.h>
 
-#include "BulletSoftBody/btSoftBodyHelpers.h"
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 #include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
