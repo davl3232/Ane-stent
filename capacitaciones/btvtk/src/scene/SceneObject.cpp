@@ -17,6 +17,8 @@ void SceneObject::UpdateRigidBody(btScalar mass) {
   std::shared_ptr<btRigidBody> rigidBody(new btRigidBody(rigidBodyCI));
   this->rigidBody = rigidBody;
 }
+
+
 SceneObject::SceneObject(vtkSmartPointer<vtkActor> actor,
                          std::shared_ptr<btCollisionShape> collider) {
   this->actor = actor;
@@ -28,6 +30,13 @@ SceneObject::SceneObject(vtkSmartPointer<vtkActor> actor,
   this->actor = actor;
   this->collider = collider;
   this->rigidBody = rigidBody;
+}
+SceneObject::SceneObject(vtkSmartPointer<vtkActor> actor,
+                         std::shared_ptr<btCollisionShape> collider,
+                         std::shared_ptr<btSoftBody> softBody) {
+  this->actor = actor;
+  this->collider = collider;
+  this->softBody = softBody;
 }
 SceneObject::~SceneObject() {}
 

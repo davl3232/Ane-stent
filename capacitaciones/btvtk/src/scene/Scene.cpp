@@ -162,9 +162,17 @@ void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
     this->objects[i]->UpdatePhysics(deltaTime);
   }
 }
-void Scene::AddObject(std::shared_ptr<SceneObject> object) {
+void Scene::AddRigidObject(std::shared_ptr<SceneObject> object) {
   this->objects.push_back(object);
   this->dynamicsWorld->addRigidBody(object->rigidBody.get());
+  this->renderWindowInteractor->GetRenderWindow()
+      ->GetRenderers()
+      ->GetFirstRenderer()
+      ->AddActor(object->actor);
+}
+void Scene::AddSoftObject(std::shared_ptr<SceneObject> object) {
+  this->objects.push_back(object);
+  this->dynamicsWorld->addSoftBody(object->rigidBody.get());
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
       ->GetFirstRenderer()
