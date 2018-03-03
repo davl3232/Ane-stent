@@ -18,9 +18,9 @@
 std::shared_ptr<SceneObject> loadPlane() {
   // Crear source de cubo.
   vtkSmartPointer<vtkCubeSource> source = vtkSmartPointer<vtkCubeSource>::New();
-  source->SetXLength(10);
+  source->SetXLength(200);
   source->SetYLength(1);
-  source->SetZLength(10);
+  source->SetZLength(200);
   source->Update();
 
   // Crear mapper.
@@ -34,7 +34,7 @@ std::shared_ptr<SceneObject> loadPlane() {
 
   // Crear collider de cubo.
   std::shared_ptr<btCollisionShape> collider(
-      new btBoxShape(btVector3(5, 0.5, 5)));
+      new btBoxShape(btVector3(100, 0.5, 100)));
 
   // Crear SceneObject
   std::shared_ptr<SceneObject> object(new SceneObject(actor, collider));

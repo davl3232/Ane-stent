@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "../scene/SceneObject.h"
 
@@ -42,9 +43,9 @@ std::shared_ptr<btCollisionShape> createConvexHullCollider(
     polyData->GetPoint(i, p);
 
     std::vector<double> np(3, 0);
-    np[0] = (p[0]);
-    np[1] = (p[1]);
-    np[2] = (p[2]);
+    np[0] = p[0];
+    np[1] = p[1];
+    np[2] = p[2];
 
     vertices.push_back(np);
   }
@@ -260,21 +261,22 @@ std::shared_ptr<SceneObject> ModelLoader::LoadSoftBody(std::string fileName) {
   // loop through all the shapes and add vertices and indices
   int offset = 0;
 
-  vtkSmartPointer<vtkPolyDataMapper> polyData = object->actor->GetMapper();
+  vtkSmartPointer<vtkMapper> mapper = object->actor->GetMapper();
 
-  // add vertices
-  for (int j = 0; j < mesh.positions.size(); ++j) {
-    vertices.push_back(shape.mesh.positions[j]);
-  }
+  vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
 
-  // add indices
-  for (int j = 0; j < shape.mesh.indices.size(); ++j) {
-    indices.push_back(offset + shape.mesh.indices[j]);
+  // Extraer puntos del DataSet
+  for (vtkIdType i = 0; i < dataSet->GetNumberOfPoints(); i++) {
+    double p[3];
+    dataSet->GetPoint(i, p);
+
+    for (char j = 0; j < 3; j++) {
+      vertices.push_back(p[j]);
+    }
+    indices.push_back(i);
   }
-  offset += shape.mesh.positions.size();
-  printf(
-      "[INFO] Obj loaded: Extracted %d vertices, %d indices from obj file "
-      "[%s]\n",
-      vertices.size(), indices.size(), fileName);
+  std::cout << "[INFO] Obj loaded: Extracted " << vertices.size()
+            << " vertices, " << indices.size() << " indices from obj file "
+            << fileName << std::endl;
   return object;
 }
