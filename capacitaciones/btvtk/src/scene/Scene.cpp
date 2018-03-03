@@ -87,12 +87,9 @@ void Scene::InitPhysics() {
   // Instanciar el mundo con el despachador, el algoritmo de broadphase, el
   // solucionador y la configuacion de colisiones.
   this->dynamicsWorld =
-      std::shared_ptr<btDiscreteDynamicsWorld>(new btSoftRigidDynamicsWorld(
-          dispatcher, broadphase, solver, collisionConfiguration));
-
-  this->dynamicsWorldAux =
       std::shared_ptr<btSoftRigidDynamicsWorld>(new btSoftRigidDynamicsWorld(
           dispatcher, broadphase, solver, collisionConfiguration));
+
   // Se aplica gravedad sobre el eje y.
   this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
 }
@@ -169,8 +166,8 @@ void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
 }
 void Scene::AddSoftObject(std::shared_ptr<SceneSoftObject> object) {
   this->softObjects.push_back(object);
-  dynamicsWorldAux->addSoftBody(object->softBody.get());
-  // (btSoftRigidDynamicsWorld)(this->dynamicsWorld) = dynamicsWorldAux;
+  dynamicsWorld->addSoftBody(object->softBody.get());
+
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
       ->GetFirstRenderer()

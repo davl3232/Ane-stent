@@ -17,8 +17,7 @@ class Scene {
   std::vector<std::shared_ptr<SceneSoftObject>> softObjects;
 
  public:
-  std::shared_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
-  std::shared_ptr<btSoftRigidDynamicsWorld> dynamicsWorldAux;
+  std::shared_ptr<btSoftRigidDynamicsWorld> dynamicsWorld;
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;
 
   Scene();
