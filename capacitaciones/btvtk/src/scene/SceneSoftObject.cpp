@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "BulletSoftBody/btSoftBody.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
 #include <vtkDataSet.h>
@@ -14,7 +15,7 @@
 SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
   this->actor = actor;
 }
-
+SceneSoftObject::~SceneSoftObject() {}
 void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo& worldInfo,
                                      btScalar mass) {
   btAlignedObjectArray<btScalar> vertices;

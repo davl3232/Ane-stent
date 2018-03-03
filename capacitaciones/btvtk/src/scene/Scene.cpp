@@ -91,6 +91,11 @@ void Scene::InitPhysics() {
 
   // Se aplica gravedad sobre el eje y.
   this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
+  // Configuración para la simulación de cuerpos suaves.
+  this->softBodyWorldInfo;
+  std::cout << "Air density: " << this->softBodyWorldInfo.air_density
+            << std::endl;
 }
 void Scene::InitGraphics() {
   // Crear Renderer, RenderWindow y RenderWindowInteractor.
@@ -111,12 +116,6 @@ void Scene::InitGraphics() {
   axes->AxisLabelsOff();
 
   renderer->AddActor(axes);
-
-  // Agregar actores al renderer.
-  for (size_t i = 0; i < this->rigidObjects.size(); i++) {
-    std::shared_ptr<SceneRigidObject> SceneRigidObject = this->rigidObjects[i];
-    renderer->AddActor(SceneRigidObject->actor);
-  }
 
   vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
       vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();  // like
@@ -149,11 +148,10 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
-
-  // Llamar actualización de física de cada objeto.
-  for (size_t i = 0; i < this->rigidObjects.size(); i++) {
-    this->rigidObjects[i]->UpdatePhysics(deltaTime);
-  }
+  // // Llamar actualización de física de cada objeto.
+  // for (size_t i = 0; i < this->rigidObjects.size(); i++) {
+  //   this->rigidObjects[i]->UpdatePhysics(deltaTime);
+  // }
 }
 void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
   this->rigidObjects.push_back(object);

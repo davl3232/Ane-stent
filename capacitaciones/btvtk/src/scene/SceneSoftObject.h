@@ -1,8 +1,6 @@
 #ifndef SCENE_SOFT_OBJECT_H
 #define SCENE_SOFT_OBJECT_H
 
-#include "SceneRigidObject.h"
-
 #include <chrono>
 #include <memory>
 #include <string>
@@ -17,7 +15,6 @@ class SceneSoftObject {
  public:
   std::string name;
   vtkSmartPointer<vtkActor> actor;
-  std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btSoftBody> softBody;
 
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
