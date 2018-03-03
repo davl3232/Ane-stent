@@ -6,6 +6,7 @@
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 #include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
+
 #include <vtkAxesActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleTrackballCamera.h>
@@ -90,6 +91,9 @@ void Scene::InitPhysics() {
       std::shared_ptr<btDiscreteDynamicsWorld>(new btSoftRigidDynamicsWorld(
           dispatcher, broadphase, solver, collisionConfiguration));
 
+  this-> dynamicsWorldAux =
+   std::shared_ptr<btSoftRigidDynamicsWorld>(new btSoftRigidDynamicsWorld(
+          dispatcher, broadphase, solver, collisionConfiguration));
   // Se aplica gravedad sobre el eje y.
   this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
@@ -170,15 +174,16 @@ void Scene::AddRigidObject(std::shared_ptr<SceneObject> object) {
       ->GetFirstRenderer()
       ->AddActor(object->actor);
 }
-void Scene::AddSoftObject(std::shared_ptr<SceneObject> object) {
-  this->objects.push_back(object);
-  this->dynamicsWorld->addSoftBody(object->rigidBody.get());
+void Scene::AddSoftObject(std::shared_ptr<SceneSoftObject> object) {
+  this->softObjects.push_back(object);
+  dynamicsWorldAux->addSoftBody(object->softBody.get());
+ // (btSoftRigidDynamicsWorld)(this->dynamicsWorld) = dynamicsWorldAux;
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
       ->GetFirstRenderer()
       ->AddActor(object->actor);
 }
-std::vector<std::shared_ptr<SceneObject>> Scene::GetObjects() {
+std::vector<std::shared_ptr<SceneObject>> Scene::GetRigidObjects() {
   return this->objects;
 }
 void Scene::SetBackgroundColor(double r, double g, double b) {

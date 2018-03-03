@@ -46,14 +46,14 @@ std::shared_ptr<SceneObject> loadPlane() {
 int main(int argc, char **argv) {
   // Añadir plano
   std::shared_ptr<Scene> scene(new Scene());
-  scene->AddObject(loadPlane());
+  scene->AddRigidObject(loadPlane());
   // Añadir modelos desde archivos en consola
   for (size_t i = 1; i < argc; i++) {
     std::shared_ptr<SceneObject> object =
         ModelLoader::Load(std::string(argv[i]));
     btTransform trans(btQuaternion::getIdentity(), btVector3(0, 10, 0));
     object->rigidBody->setWorldTransform(trans);
-    scene->AddObject(object);
+    scene->AddRigidObject(object);
   }
   scene->Loop();
   return EXIT_SUCCESS;

@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 
+#include <BulletSoftBody/btSoftBody.h>
 #include <btBulletDynamicsCommon.h>
 
 #include <vtkActor.h>
@@ -21,12 +22,14 @@ class SceneObject : public std::enable_shared_from_this<SceneObject> {
   std::shared_ptr<btCollisionShape> collider;
   std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btRigidBody> rigidBody;
+  std::shared_ptr<btSoftBody> softBody;
 
   SceneObject(vtkSmartPointer<vtkActor> actor,
               std::shared_ptr<btCollisionShape> collider);
   SceneObject(vtkSmartPointer<vtkActor> actor,
               std::shared_ptr<btCollisionShape> collider,
               std::shared_ptr<btRigidBody> rigidBody);
+
   ~SceneObject();
   void UpdateRigidBody(btScalar mass = 0);
   void UpdatePhysics(std::chrono::duration<double> deltaTime);
