@@ -13,9 +13,9 @@
 
 #include "loaders/ModelLoader.h"
 #include "scene/Scene.h"
-#include "scene/SceneObject.h"
+#include "scene/SceneRigidObject.h"
 
-std::shared_ptr<SceneObject> loadPlane() {
+std::shared_ptr<SceneRigidObject> loadPlane() {
   // Crear source de cubo.
   vtkSmartPointer<vtkCubeSource> source = vtkSmartPointer<vtkCubeSource>::New();
   source->SetXLength(200);
@@ -36,8 +36,9 @@ std::shared_ptr<SceneObject> loadPlane() {
   std::shared_ptr<btCollisionShape> collider(
       new btBoxShape(btVector3(100, 0.5, 100)));
 
-  // Crear SceneObject
-  std::shared_ptr<SceneObject> object(new SceneObject(actor, collider));
+  // Crear SceneRigidObject
+  std::shared_ptr<SceneRigidObject> object(
+      new SceneRigidObject(actor, collider));
   object->UpdateRigidBody(0);
   object->name = "Plane";
   return object;
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
   scene->AddRigidObject(loadPlane());
   // Añadir modelos desde archivos en consola
   for (size_t i = 1; i < argc; i++) {
-    std::shared_ptr<SceneObject> object =
+    std::shared_ptr<SceneRigidObject> object =
         ModelLoader::Load(std::string(argv[i]));
     btTransform trans(btQuaternion::getIdentity(), btVector3(0, 10, 0));
     object->rigidBody->setWorldTransform(trans);

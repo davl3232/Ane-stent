@@ -11,7 +11,7 @@ include_directories(${BULLET_INCLUDE_DIRS})
 link_directories(${BULLET_LIBRARY_DIRS})
 
 ADD_EXECUTABLE(main 
-	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneObject.cpp src/scene/Scene.cpp src/scene/SceneMotionState.cpp src/util/ToString.cpp
+	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneRigidObject.cpp src/scene/Scene.cpp src/scene/SceneMotionState.cpp src/util/ToString.cpp
 )
 message(${BULLET_LIBRARIES})
 target_link_libraries(main ${VTK_LIBRARIES} ${BULLET_LIBRARIES})

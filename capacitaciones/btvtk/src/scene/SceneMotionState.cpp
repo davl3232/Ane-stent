@@ -4,11 +4,12 @@
 #include <vtkTransform.h>
 
 #include "../util/ToString.h"
-#include "SceneObject.h"
+#include "SceneRigidObject.h"
 
-SceneMotionState::SceneMotionState(std::shared_ptr<SceneObject> sceneObject,
-                                   btTransform initialTransform) {
-  this->sceneObject = sceneObject;
+SceneMotionState::SceneMotionState(
+    std::shared_ptr<SceneRigidObject> rigidObject,
+    btTransform initialTransform) {
+  this->rigidObject = rigidObject;
   this->initialTransform = initialTransform;
 }
 SceneMotionState::~SceneMotionState() {}
@@ -36,7 +37,7 @@ void SceneMotionState::setWorldTransform(const btTransform &worldTrans) {
   std::cout << "===================================" << std::endl;
   std::cout << ToString::MatArr(vtkTransMat) << std::endl;
   vtkTrans->SetMatrix(vtkTransMat);
-  if (auto object = this->sceneObject.lock()) {
+  if (auto object = this->rigidObject.lock()) {
     object->actor->SetUserTransform(vtkTrans);
   }
 }

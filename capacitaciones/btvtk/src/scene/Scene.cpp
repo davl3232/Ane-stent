@@ -6,7 +6,6 @@
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 #include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
-
 #include <vtkAxesActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleTrackballCamera.h>
@@ -56,9 +55,9 @@ class vtkTimerCallback : public vtkCommand {
 };
 Scene::Scene() { this->Init(); }
 Scene::~Scene() {
-  for (size_t i = 0; i < this->objects.size(); i++) {
-    std::shared_ptr<SceneObject> sceneObject = this->objects[i];
-    this->dynamicsWorld->removeRigidBody(sceneObject->rigidBody.get());
+  for (size_t i = 0; i < this->rigidObjects.size(); i++) {
+    std::shared_ptr<SceneRigidObject> SceneRigidObject = this->rigidObjects[i];
+    this->dynamicsWorld->removeRigidBody(SceneRigidObject->rigidBody.get());
   }
 }
 void Scene::Init() {
@@ -91,17 +90,11 @@ void Scene::InitPhysics() {
       std::shared_ptr<btDiscreteDynamicsWorld>(new btSoftRigidDynamicsWorld(
           dispatcher, broadphase, solver, collisionConfiguration));
 
-  this-> dynamicsWorldAux =
-   std::shared_ptr<btSoftRigidDynamicsWorld>(new btSoftRigidDynamicsWorld(
+  this->dynamicsWorldAux =
+      std::shared_ptr<btSoftRigidDynamicsWorld>(new btSoftRigidDynamicsWorld(
           dispatcher, broadphase, solver, collisionConfiguration));
   // Se aplica gravedad sobre el eje y.
   this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
-
-  // Agregar objetos a la lista de rigidBodies.
-  for (size_t i = 0; i < this->objects.size(); i++) {
-    std::shared_ptr<SceneObject> sceneObject = this->objects[i];
-    this->dynamicsWorld->addRigidBody(sceneObject->rigidBody.get());
-  }
 }
 void Scene::InitGraphics() {
   // Crear Renderer, RenderWindow y RenderWindowInteractor.
@@ -124,9 +117,9 @@ void Scene::InitGraphics() {
   renderer->AddActor(axes);
 
   // Agregar actores al renderer.
-  for (size_t i = 0; i < this->objects.size(); i++) {
-    std::shared_ptr<SceneObject> sceneObject = this->objects[i];
-    renderer->AddActor(sceneObject->actor);
+  for (size_t i = 0; i < this->rigidObjects.size(); i++) {
+    std::shared_ptr<SceneRigidObject> SceneRigidObject = this->rigidObjects[i];
+    renderer->AddActor(SceneRigidObject->actor);
   }
 
   vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
@@ -162,12 +155,12 @@ void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
 
   // Llamar actualización de física de cada objeto.
-  for (size_t i = 0; i < this->objects.size(); i++) {
-    this->objects[i]->UpdatePhysics(deltaTime);
+  for (size_t i = 0; i < this->rigidObjects.size(); i++) {
+    this->rigidObjects[i]->UpdatePhysics(deltaTime);
   }
 }
-void Scene::AddRigidObject(std::shared_ptr<SceneObject> object) {
-  this->objects.push_back(object);
+void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
+  this->rigidObjects.push_back(object);
   this->dynamicsWorld->addRigidBody(object->rigidBody.get());
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
@@ -177,14 +170,11 @@ void Scene::AddRigidObject(std::shared_ptr<SceneObject> object) {
 void Scene::AddSoftObject(std::shared_ptr<SceneSoftObject> object) {
   this->softObjects.push_back(object);
   dynamicsWorldAux->addSoftBody(object->softBody.get());
- // (btSoftRigidDynamicsWorld)(this->dynamicsWorld) = dynamicsWorldAux;
+  // (btSoftRigidDynamicsWorld)(this->dynamicsWorld) = dynamicsWorldAux;
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
       ->GetFirstRenderer()
       ->AddActor(object->actor);
-}
-std::vector<std::shared_ptr<SceneObject>> Scene::GetRigidObjects() {
-  return this->objects;
 }
 void Scene::SetBackgroundColor(double r, double g, double b) {
   this->renderWindowInteractor->GetRenderWindow()
