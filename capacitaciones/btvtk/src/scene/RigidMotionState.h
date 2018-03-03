@@ -5,15 +5,15 @@
 
 #include "SceneRigidObject.h"
 
-class SceneMotionState : public btMotionState {
+class RigidMotionState : public btMotionState {
  protected:
   std::weak_ptr<SceneRigidObject> rigidObject;
   btTransform initialTransform;
 
  public:
-  SceneMotionState(std::shared_ptr<SceneRigidObject> rigidObject,
+  RigidMotionState(std::shared_ptr<SceneRigidObject> rigidObject,
                    btTransform initialTransform);
-  virtual ~SceneMotionState();
+  virtual ~RigidMotionState();
   virtual void getWorldTransform(btTransform &worldTrans) const;
   virtual void setWorldTransform(const btTransform &worldTrans);
 };

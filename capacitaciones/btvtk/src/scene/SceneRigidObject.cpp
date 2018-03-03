@@ -5,13 +5,13 @@
 #include <vtkProperty.h>
 #include <vtkTransform.h>
 
-#include "SceneMotionState.h"
+#include "RigidMotionState.h"
 
 void SceneRigidObject::UpdateRigidBody(btScalar mass) {
   btVector3 inertia(0, 0, 0);
   this->collider->calculateLocalInertia(mass, inertia);
   this->motionState = std::shared_ptr<btMotionState>(
-      new SceneMotionState(shared_from_this(), btTransform::getIdentity()));
+      new RigidMotionState(shared_from_this(), btTransform::getIdentity()));
   btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(
       mass, this->motionState.get(), this->collider.get(), inertia);
   std::shared_ptr<btRigidBody> rigidBody(new btRigidBody(rigidBodyCI));
