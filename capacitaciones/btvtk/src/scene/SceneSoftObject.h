@@ -17,11 +17,10 @@ class SceneSoftObject : public SceneObject {
  public:
    std::string name;
   vtkSmartPointer<vtkActor> actor;
-  std::shared_ptr<btCollisionShape> collider;
   std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btSoftBody> softBody;
 
-  
+
   SceneSoftObject();
   SceneSoftObject(vtkSmartPointer<vtkActor> actor,
               std::shared_ptr<btCollisionShape> collider,
