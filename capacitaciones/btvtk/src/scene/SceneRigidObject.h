@@ -1,5 +1,5 @@
-#ifndef SCENE_OBJECT_H
-#define SCENE_OBJECT_H
+#ifndef SCENE_RIGID_OBJECT_H
+#define SCENE_RIGID_OBJECT_H
 
 #include <chrono>
 #include <memory>
@@ -15,7 +15,7 @@
  * @brief Contiene la información necesaria para simular la física de un objeto
  * Bullet y renderizarlo con VTK.
  */
-class SceneObject : public std::enable_shared_from_this<SceneObject> {
+class SceneRigidObject : public std::enable_shared_from_this<SceneRigidObject> {
  public:
   std::string name;
   vtkSmartPointer<vtkActor> actor;
@@ -24,13 +24,13 @@ class SceneObject : public std::enable_shared_from_this<SceneObject> {
   std::shared_ptr<btRigidBody> rigidBody;
   std::shared_ptr<btSoftBody> softBody;
 
-  SceneObject(vtkSmartPointer<vtkActor> actor,
-              std::shared_ptr<btCollisionShape> collider);
-  SceneObject(vtkSmartPointer<vtkActor> actor,
-              std::shared_ptr<btCollisionShape> collider,
-              std::shared_ptr<btRigidBody> rigidBody);
+  SceneRigidObject(vtkSmartPointer<vtkActor> actor,
+                   std::shared_ptr<btCollisionShape> collider);
+  SceneRigidObject(vtkSmartPointer<vtkActor> actor,
+                   std::shared_ptr<btCollisionShape> collider,
+                   std::shared_ptr<btRigidBody> rigidBody);
 
-  ~SceneObject();
+  ~SceneRigidObject();
   void UpdateRigidBody(btScalar mass = 0);
   void UpdatePhysics(std::chrono::duration<double> deltaTime);
 };

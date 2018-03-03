@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "../scene/SceneObject.h"
+#include "../scene/SceneRigidObject.h"
 
 #include <vtkActor.h>
 #include <vtkDataSetMapper.h>
@@ -53,7 +53,7 @@ std::shared_ptr<btCollisionShape> createConvexHullCollider(
   return createConvexHullCollider(vertices);
 }
 
-std::shared_ptr<SceneObject> ModelLoader::Load(std::string fileName) {
+std::shared_ptr<SceneRigidObject> ModelLoader::Load(std::string fileName) {
   // Abrir archivo
   std::ifstream myReadFile;
   myReadFile.open(fileName);
@@ -73,7 +73,7 @@ std::shared_ptr<SceneObject> ModelLoader::Load(std::string fileName) {
   return NULL;
 }
 
-std::shared_ptr<SceneObject> ModelLoader::Load(
+std::shared_ptr<SceneRigidObject> ModelLoader::Load(
     std::vector<std::vector<double>> vertices, std::string name) {
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
   for (size_t i = 0; i < vertices.size(); i++) {
@@ -115,10 +115,11 @@ std::shared_ptr<SceneObject> ModelLoader::Load(
 
   std::cout << "Terminado." << std::endl;
 
-  // Crear SceneObject
-  std::cout << "\tCreando SceneObject...";
+  // Crear SceneRigidObject
+  std::cout << "\tCreando SceneRigidObject...";
 
-  std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
+  std::shared_ptr<SceneRigidObject> object(
+      new SceneRigidObject(actor, convexHullShape));
   object->UpdateRigidBody(1);
   object->name = name;
 
@@ -127,7 +128,7 @@ std::shared_ptr<SceneObject> ModelLoader::Load(
   return object;
 }
 
-std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
+std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
   // Leer como XML
   std::cout << "Cargando XML..." << std::endl;
 
@@ -179,10 +180,11 @@ std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
 
   std::cout << "Terminado." << std::endl;
 
-  // Crear SceneObject
-  std::cout << "\tCreando SceneObject...";
+  // Crear SceneRigidObject
+  std::cout << "\tCreando SceneRigidObject...";
 
-  std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
+  std::shared_ptr<SceneRigidObject> object(
+      new SceneRigidObject(actor, convexHullShape));
   object->UpdateRigidBody(1);
   object->name = fileName;
 
@@ -191,7 +193,7 @@ std::shared_ptr<SceneObject> ModelLoader::LoadXML(std::string fileName) {
   return object;
 }
 
-std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
+std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
   // Leer como TXT
   std::cout << "Cargando TXT..." << std::endl;
   vtkSmartPointer<vtkGenericDataObjectReader> reader =
@@ -240,10 +242,11 @@ std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
 
   std::cout << "Terminado." << std::endl;
 
-  // Crear SceneObjects
-  std::cout << "\tCreando SceneObject...";
+  // Crear SceneRigidObjects
+  std::cout << "\tCreando SceneRigidObject...";
 
-  std::shared_ptr<SceneObject> object(new SceneObject(actor, convexHullShape));
+  std::shared_ptr<SceneRigidObject> object(
+      new SceneRigidObject(actor, convexHullShape));
   object->UpdateRigidBody(1);
   object->name = fileName;
 
@@ -252,8 +255,9 @@ std::shared_ptr<SceneObject> ModelLoader::LoadTXT(std::string fileName) {
   return object;
 }
 
-std::shared_ptr<SceneObject> ModelLoader::LoadSoftBody(std::string fileName) {
-  std::shared_ptr<SceneObject> object = ModelLoader::Load(fileName);
+std::shared_ptr<SceneRigidObject> ModelLoader::LoadSoftBody(
+    std::string fileName) {
+  std::shared_ptr<SceneRigidObject> object = ModelLoader::Load(fileName);
 
   btAlignedObjectArray<btScalar> vertices;
   btAlignedObjectArray<int> indices;

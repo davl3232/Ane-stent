@@ -1,4 +1,4 @@
-#include "SceneObject.h"
+#include "SceneRigidObject.h"
 
 #include <memory>
 
@@ -7,7 +7,7 @@
 
 #include "SceneMotionState.h"
 
-void SceneObject::UpdateRigidBody(btScalar mass) {
+void SceneRigidObject::UpdateRigidBody(btScalar mass) {
   btVector3 inertia(0, 0, 0);
   this->collider->calculateLocalInertia(mass, inertia);
   this->motionState = std::shared_ptr<btMotionState>(
@@ -18,23 +18,22 @@ void SceneObject::UpdateRigidBody(btScalar mass) {
   this->rigidBody = rigidBody;
 }
 
-
-SceneObject::SceneObject(vtkSmartPointer<vtkActor> actor,
-                         std::shared_ptr<btCollisionShape> collider) {
+SceneRigidObject::SceneRigidObject(vtkSmartPointer<vtkActor> actor,
+                                   std::shared_ptr<btCollisionShape> collider) {
   this->actor = actor;
   this->collider = collider;
 }
-SceneObject::SceneObject(vtkSmartPointer<vtkActor> actor,
-                         std::shared_ptr<btCollisionShape> collider,
-                         std::shared_ptr<btRigidBody> rigidBody) {
+SceneRigidObject::SceneRigidObject(vtkSmartPointer<vtkActor> actor,
+                                   std::shared_ptr<btCollisionShape> collider,
+                                   std::shared_ptr<btRigidBody> rigidBody) {
   this->actor = actor;
   this->collider = collider;
   this->rigidBody = rigidBody;
 }
 
-SceneObject::~SceneObject() {}
+SceneRigidObject::~SceneRigidObject() {}
 
-void SceneObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {
+void SceneRigidObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   btTransform btTrans;
   this->rigidBody->getMotionState()->getWorldTransform(btTrans);
 }

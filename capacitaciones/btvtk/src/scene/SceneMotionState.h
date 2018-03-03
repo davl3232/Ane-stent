@@ -3,15 +3,15 @@
 
 #include <memory>
 
-#include "SceneObject.h"
+#include "SceneRigidObject.h"
 
 class SceneMotionState : public btMotionState {
  protected:
-  std::weak_ptr<SceneObject> sceneObject;
+  std::weak_ptr<SceneRigidObject> rigidObject;
   btTransform initialTransform;
 
  public:
-  SceneMotionState(std::shared_ptr<SceneObject> sceneObject,
+  SceneMotionState(std::shared_ptr<SceneRigidObject> rigidObject,
                    btTransform initialTransform);
   virtual ~SceneMotionState();
   virtual void getWorldTransform(btTransform &worldTrans) const;

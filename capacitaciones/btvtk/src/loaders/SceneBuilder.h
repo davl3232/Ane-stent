@@ -8,7 +8,7 @@
 #include <vtkSphereSource.h>
 
 #include "../scene/Scene.h"
-#include "../scene/SceneObject.h"
+#include "../scene/SceneRigidObject.h"
 #include "ModelLoader.h"
 
 class SceneBuilder {
@@ -23,12 +23,10 @@ class SceneBuilder {
 
     return scene;
   }
-  static std::shared_ptr<SceneObject> LoadCube(double tx = 0, double ty = 0,
-                                               double tz = 0, double rx = 0,
-                                               double ry = 0, double rz = 0,
-                                               double sx = 1, double sy = 1,
-                                               double sz = 1, double r = 1,
-                                               double g = 1, double b = 1) {
+  static std::shared_ptr<SceneRigidObject> LoadCube(
+      double tx = 0, double ty = 0, double tz = 0, double rx = 0, double ry = 0,
+      double rz = 0, double sx = 1, double sy = 1, double sz = 1, double r = 1,
+      double g = 1, double b = 1) {
     // La transformación.
     vtkSmartPointer<vtkTransform> transform =
         vtkSmartPointer<vtkTransform>::New();
@@ -46,19 +44,18 @@ class SceneBuilder {
     source->Update();
 
     // Cargar objeto.
-    std::shared_ptr<SceneObject> object(ModelLoader::Load(source, transform));
+    std::shared_ptr<SceneRigidObject> object(
+        ModelLoader::Load(source, transform));
 
     // Cambiar color.
     object->actor->GetProperty()->SetColor(r, g, b);
 
     return object;
   }
-  static std::shared_ptr<SceneObject> LoadSphere(double tx = 0, double ty = 0,
-                                                 double tz = 0, double rx = 0,
-                                                 double ry = 0, double rz = 0,
-                                                 double sx = 1, double sy = 1,
-                                                 double sz = 1, double r = 1,
-                                                 double g = 1, double b = 1) {
+  static std::shared_ptr<SceneRigidObject> LoadSphere(
+      double tx = 0, double ty = 0, double tz = 0, double rx = 0, double ry = 0,
+      double rz = 0, double sx = 1, double sy = 1, double sz = 1, double r = 1,
+      double g = 1, double b = 1) {
     // La transformación.
     vtkSmartPointer<vtkTransform> transform =
         vtkSmartPointer<vtkTransform>::New();
@@ -79,19 +76,18 @@ class SceneBuilder {
     source->Update();
 
     // Cargar objeto.
-    std::shared_ptr<SceneObject> object(ModelLoader::Load(source, transform));
+    std::shared_ptr<SceneRigidObject> object(
+        ModelLoader::Load(source, transform));
 
     // Cambiar color.
     object->actor->GetProperty()->SetColor(r, g, b);
 
     return object;
   }
-  static std::shared_ptr<SceneObject> LoadCylinder(double tx = 0, double ty = 0,
-                                                   double tz = 0, double rx = 0,
-                                                   double ry = 0, double rz = 0,
-                                                   double sx = 1, double sy = 1,
-                                                   double sz = 1, double r = 1,
-                                                   double g = 1, double b = 1) {
+  static std::shared_ptr<SceneRigidObject> LoadCylinder(
+      double tx = 0, double ty = 0, double tz = 0, double rx = 0, double ry = 0,
+      double rz = 0, double sx = 1, double sy = 1, double sz = 1, double r = 1,
+      double g = 1, double b = 1) {
     // La transformación.
     vtkSmartPointer<vtkTransform> transform =
         vtkSmartPointer<vtkTransform>::New();
@@ -112,14 +108,15 @@ class SceneBuilder {
     source->Update();
 
     // Cargar objeto.
-    std::shared_ptr<SceneObject> object(ModelLoader::Load(source, transform));
+    std::shared_ptr<SceneRigidObject> object(
+        ModelLoader::Load(source, transform));
 
     // Cambiar color.
     object->actor->GetProperty()->SetColor(r, g, b);
 
     return object;
   }
-  static std::shared_ptr<SceneObject> LoadRoof() {
+  static std::shared_ptr<SceneRigidObject> LoadRoof() {
     // La transformación.
     vtkSmartPointer<vtkTransform> R = vtkSmartPointer<vtkTransform>::New();
     vtkSmartPointer<vtkTransform> S = vtkSmartPointer<vtkTransform>::New();
@@ -145,7 +142,8 @@ class SceneBuilder {
         vtkSmartPointer<vtkCubeSource>::New();
     source->SetCenter(0, 0, 0);
     source->Update();
-    std::shared_ptr<SceneObject> object(ModelLoader::Load(source, transform));
+    std::shared_ptr<SceneRigidObject> object(
+        ModelLoader::Load(source, transform));
     object->actor->GetProperty()->SetColor(1, 0.4, 0);
     return object;
   }
