@@ -5,7 +5,7 @@
 #include <vtkProperty.h>
 #include <vtkTransform.h>
 
-#include "SceneMotionState.h"
+#include "RigidMotionState.h"
 
 SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor,
                                  std::shared_ptr<btCollisionShape> collider,

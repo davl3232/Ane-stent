@@ -1,4 +1,4 @@
-#include "SceneMotionState.h"
+#include "RigidMotionState.h"
 
 #include <vtkActor.h>
 #include <vtkTransform.h>
@@ -6,19 +6,19 @@
 #include "../util/ToString.h"
 #include "SceneRigidObject.h"
 
-SceneMotionState::SceneMotionState(
+RigidMotionState::RigidMotionState(
     std::shared_ptr<SceneRigidObject> rigidObject,
     btTransform initialTransform) {
   this->rigidObject = rigidObject;
   this->initialTransform = initialTransform;
 }
-SceneMotionState::~SceneMotionState() {}
+RigidMotionState::~RigidMotionState() {}
 
-void SceneMotionState::getWorldTransform(btTransform &worldTrans) const {
+void RigidMotionState::getWorldTransform(btTransform &worldTrans) const {
   worldTrans = initialTransform;
 }
 
-void SceneMotionState::setWorldTransform(const btTransform &worldTrans) {
+void RigidMotionState::setWorldTransform(const btTransform &worldTrans) {
   vtkSmartPointer<vtkTransform> vtkTrans = vtkSmartPointer<vtkTransform>::New();
   btScalar btTransMat[16] = {};
   double vtkTransMat[16] = {};
