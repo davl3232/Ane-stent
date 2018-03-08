@@ -249,7 +249,6 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
       new SceneRigidObject(actor, convexHullShape));
   object->UpdateRigidBody(1);
   object->name = fileName;
-
   std::cout << "Terminado." << std::endl;
 
   return object;
