@@ -164,7 +164,6 @@ void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
 void Scene::AddSoftObject(std::shared_ptr<SceneSoftObject> object) {
   this->softObjects.push_back(object);
   dynamicsWorld->addSoftBody(object->softBody.get());
-
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
       ->GetFirstRenderer()
