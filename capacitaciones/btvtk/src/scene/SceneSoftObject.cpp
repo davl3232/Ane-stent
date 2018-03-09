@@ -18,18 +18,11 @@ SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
 }
 SceneSoftObject::~SceneSoftObject() {}
 void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
-  btAlignedObjectArray<btScalar> vertices;
-  btAlignedObjectArray<int> indices;
-  // std::vector<btVector3> v;
-  // loop through all the shapes and add vertices and indices
-  int offset = 0;
-
   vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
 
   vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
 
-  // creación de los arreglos
-
+  // Creación de los arreglos
   btVector3 v[dataSet->GetNumberOfPoints()];
 
   // Extraer puntos del DataSet
@@ -56,4 +49,26 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
   this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
   this->softBody->randomizeConstraints();
   this->softBody->getCollisionShape()->setMargin(0.1f);
+}
+
+void SceneSoftObject::UpdateMesh() {
+  // vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
+
+  // vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
+
+  // btConvexHullShape *btc =
+  //     (btConvexHullShape *)(this->softBody->getCollisionShape());
+
+  // std::cout << btc->getNumPoints() << std::endl;
+  // // Creación de los arreglos
+  // btVector3 v[dataSet->GetNumberOfCells()];
+
+  // // Extraer puntos del DataSet
+  // for (vtkIdType i = 0; i < dataSet->GetNumberOfPoints(); i++) {
+  //   double p[3];
+  //   dataSet->GetPoint(i, p);
+  //   btVector3 vi(p[0], p[1], p[2]);
+
+  //   v[i] = vi;
+  // }
 }

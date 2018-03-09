@@ -141,7 +141,6 @@ void Scene::Loop() {
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
   std::cout << this->softObjects[0]->softBody->getTotalMass() << std::endl;
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
-
   this->renderWindowInteractor->Start();
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {
@@ -150,10 +149,18 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
-  // // Llamar actualización de física de cada objeto.
-  // for (size_t i = 0; i < this->rigidObjects.size(); i++) {
-  //   this->rigidObjects[i]->UpdatePhysics(deltaTime);
-  // }
+  std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << "--------------------------" << std::endl;
+  std::cout << "OK" << std::endl;
+  std::cout << "--------------------------" << std::endl;
+  std::cout << std::endl;
+  std::cout << std::endl;
+  // Llamar actualización de física de cada objeto.
+  for (size_t i = 0; i < this->softObjects.size(); i++) {
+    this->softObjects[i]->UpdateMesh();
+  }
+  this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
   this->rigidObjects.push_back(object);

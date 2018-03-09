@@ -19,13 +19,11 @@ class SceneSoftObject {
   std::string name;
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btSoftBody> softBody;
-  std::shared_ptr<btCollisionShape> collider;
 
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
   void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo);
-  void UpdateVertices(btAlignedObjectArray<btScalar> vertices,
-                      btAlignedObjectArray<int> indices);
+  void UpdateMesh();
 };
 
 #endif  // !SCENE_SOFT_OBJECT_H
