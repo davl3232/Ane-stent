@@ -48,6 +48,7 @@ std::shared_ptr<SceneRigidObject> loadPlane() {
 }
 
 int main(int argc, char **argv) {
+  std::cout << btGetVersion() << std::endl;
   // Añadir plano
   std::shared_ptr<Scene> scene(new Scene());
   scene->AddRigidObject(loadPlane());
