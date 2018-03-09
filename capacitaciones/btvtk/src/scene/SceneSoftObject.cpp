@@ -43,15 +43,14 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo& worldInfo,
   std::cout << "[INFO] Obj loaded: Extracted " << vertices.size()
             << " vertices, " << indices.size() << std::endl;
 
-<<<<<<< HEAD
  // this->softBody =
    //   std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
      //     worldInfo, vertices, indices, indices.size() / 3));
      /**
-     CreateFromConvexHull(	btSoftBodyWorldInfo& worldInfo,
-		const btVector3* vertices,
-		int nvertices,
-		bool randomizeConstraints = true);
+     CreateFromConvexHull(  btSoftBodyWorldInfo& worldInfo,
+    const btVector3* vertices,
+    int nvertices,
+    bool randomizeConstraints = true);
      **/
  std::cout<<"llegue aca mother"<<worldInfo.air_density<<std::endl;
    //  this-> softBody = std:: shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(worldInfo, &vertices[0], &(indices[0]), indices.size()));
@@ -61,16 +60,16 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo& worldInfo,
  btVector3 scaling(0.1, 0.1, 0.1); 
  
    btSoftBody::Material* pm=psb->appendMaterial();
-   pm->m_kLST =	0.75;
+   pm->m_kLST = 0.75;
    pm->m_flags -= btSoftBody::fMaterial::DebugDraw;
    psb->scale(scaling);
    psb->generateBendingConstraints(4,pm);
    psb->m_cfg.piterations = 2;  
    psb->m_cfg.kDF = 0.75;
-   psb->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;	
+   psb->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;  
    psb->randomizeConstraints();  
 
-   btMatrix3x3	m;
+   btMatrix3x3  m;
    btVector3 x(0,10,0);
    btVector3 a(0,0,0);
    m.setEulerZYX(a.x(),a.y(),a.z());
@@ -81,7 +80,7 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo& worldInfo,
 */
     btVector3 scaling(0.1, 0.1, 0.1); 
      btSoftBody::Material* pm=this->softBody->appendMaterial();
-     pm->m_kLST =	0.75;
+     pm->m_kLST = 0.75;
       std::cout<<"llegue aca mother1"<<std::endl;
      pm->m_flags -= btSoftBody::fMaterial::DebugDraw;
      this->softBody->scale(scaling);
@@ -89,11 +88,11 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo& worldInfo,
      this->softBody->m_cfg.piterations = 2; 
       std::cout<<"llegue aca mother2"<<std::endl; 
      this->softBody->m_cfg.kDF = 0.75;
-     this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;	
+     this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS; 
       std::cout<<"llegue aca mother3"<<std::endl;
      this->softBody->randomizeConstraints();  
  std::cout<<"llegue aca mother4"<<std::endl;
-     btMatrix3x3	m;
+     btMatrix3x3  m;
    btVector3 x(0,10,0);
    btVector3 a(0,0,0);
     std::cout<<"llegue aca mother5"<<std::endl;
@@ -104,35 +103,4 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo& worldInfo,
    this->softBody->getCollisionShape()->setMargin(0.1f);
      std::cout<<"llegue aca mother7"<<std::endl;
 
-=======
-  this->softBody =
-      std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
-          worldInfo, &vertices[0], &(indices[0]), indices.size() / 3));
-}
-
-void SceneSoftObject::UpdateVertices(btAlignedObjectArray<btScalar> vertices,
-                                     btAlignedObjectArray<int> indices) {
-  vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  for (size_t i = 0; i < vertices.size(); i += 3) {
-    points->InsertNextPoint(vertices[i], vertices[i + 1], vertices[i + 2]);
-  }
-
-  polyData->SetPoints(points);
-  vtkSmartPointer<vtkMapper> mapper = vtkSmartPointer<vtkMapper>::New();
-
-  // Extraer puntos del DataSet
-  for (vtkIdType i = 0; i < dataSet->GetNumberOfPoints(); i++) {
-    double p[3];
-    dataSet->GetPoint(i, p);
-
-    for (char j = 0; j < 3; j++) {
-      vertices.push_back(p[j]);
-    }
-    indices.push_back(i);
-  }
-  std::cout << "[INFO] Obj loaded: Extracted " << vertices.size()
-            << " vertices, " << indices.size() << " indices from obj file "
-            << fileName << std::endl;
->>>>>>> 20f6545291cce753753120a2e28e5fe6fb555ea2
 }

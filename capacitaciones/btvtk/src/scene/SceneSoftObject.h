@@ -25,7 +25,7 @@ class SceneSoftObject {
   ~SceneSoftObject();
   void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btScalar mass);
   void UpdateVertices(btAlignedObjectArray<btScalar> vertices,
-                      btAlignedObjectArray<int> indices)
+                      btAlignedObjectArray<int> indices);
 };
 
 #endif  // !SCENE_SOFT_OBJECT_H
