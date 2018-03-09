@@ -30,6 +30,9 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
     double p[3];
     dataSet->GetPoint(i, p);
     btVector3 vi(p[0], p[1], p[2]);
+    std::cout << std::endl;
+    std::cout << "Punto " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
+              << ")" << std::endl;
 
     v[i] = vi;
   }
@@ -48,27 +51,28 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
   this->softBody->m_cfg.kDF = 0.75;
   this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
   this->softBody->randomizeConstraints();
-  this->softBody->getCollisionShape()->setMargin(0.1f);
+  // this->softBody->getCollisionShape()->setMargin(0.1f);
+  // this->UpdateMesh();
 }
 
 void SceneSoftObject::UpdateMesh() {
-  // vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
+  vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
 
-  // vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
+  vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
 
-  // btConvexHullShape *btc =
-  //     (btConvexHullShape *)(this->softBody->getCollisionShape());
-
-  // std::cout << btc->getNumPoints() << std::endl;
-  // // Creación de los arreglos
-  // btVector3 v[dataSet->GetNumberOfCells()];
-
-  // // Extraer puntos del DataSet
-  // for (vtkIdType i = 0; i < dataSet->GetNumberOfPoints(); i++) {
-  //   double p[3];
-  //   dataSet->GetPoint(i, p);
-  //   btVector3 vi(p[0], p[1], p[2]);
-
-  //   v[i] = vi;
-  // }
+  this->softBody->getCollisionShape()->getShapeType();
+  // std::cout << "ShapeType: "
+  //           << this->softBody->getCollisionShape()->isSoftBody() <<
+  //           std::endl;
+  btConvexHullShape *btc =
+      dynamic_cast<btConvexHullShape *>(this->softBody->getCollisionShape());
+  std::cout << "Puntos del collisionShape: " << btc->getNumPoints()
+            << std::endl;
+  const btVector3 *points = btc->getPoints();
+  for (int i = 0; i < btc->getNumPoints(); i++) {
+    btVector3 p = points[i];
+    std::cout << std::endl;
+    std::cout << "Punto " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
+              << ")" << std::endl;
+  }
 }

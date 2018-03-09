@@ -326,6 +326,7 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadXMLSoft(
 
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
   object->UpdateSoftBody(worldInfo);
+  //   object->softBody->setCollisionShape(createConvexHullCollider(polyData).get());
   object->name = fileName;
 
   std::cout << "Terminado." << std::endl;
@@ -380,6 +381,7 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadTXTSoft(
 
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
   object->UpdateSoftBody(worldInfo);
+  //   object->softBody->setCollisionShape(createConvexHullCollider(polyData).get());
   object->name = fileName;
   std::cout << "Terminado." << std::endl;
 

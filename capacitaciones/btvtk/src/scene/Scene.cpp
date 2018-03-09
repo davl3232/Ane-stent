@@ -148,14 +148,8 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
+  std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << "--------------------------" << std::endl;
-  std::cout << "OK" << std::endl;
-  std::cout << "--------------------------" << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
   // Llamar actualización de física de cada objeto.
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdateMesh();
