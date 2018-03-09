@@ -93,7 +93,7 @@ void Scene::InitPhysics() {
   this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
   // Configuración para la simulación de cuerpos suaves.
-  this->softBodyWorldInfo;
+ 
   std::cout << "Air density: " << this->softBodyWorldInfo.air_density
             << std::endl;
 }
@@ -135,12 +135,14 @@ void Scene::Loop() {
   // Sign up to receive TimerEvent
   vtkSmartPointer<vtkTimerCallback> callback =
       vtkSmartPointer<vtkTimerCallback>::New();
+      std::cout<<"llegue aca mother10"<<std::endl;
   callback->scene = std::shared_ptr<Scene>(this);
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
-
+std::cout<<this->softObjects[0]->softBody->getTotalMass()<<std::endl;
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
-
+std::cout<<"llegue aca mother11"<<std::endl;
   this->renderWindowInteractor->Start();
+  std::cout<<"llegue aca mother12"<<std::endl;
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->UpdatePhysics(deltaTime);
@@ -163,7 +165,7 @@ void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
 }
 void Scene::AddSoftObject(std::shared_ptr<SceneSoftObject> object) {
   this->softObjects.push_back(object);
-  dynamicsWorld->addSoftBody(object->softBody.get());
+  this->dynamicsWorld->addSoftBody(object->softBody.get());
   this->renderWindowInteractor->GetRenderWindow()
       ->GetRenderers()
       ->GetFirstRenderer()

@@ -20,7 +20,8 @@ class SceneSoftObject {
   std::string name;
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btSoftBody> softBody;
-
+  std::shared_ptr<btCollisionShape> collider;
+  
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
   void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btScalar mass);
