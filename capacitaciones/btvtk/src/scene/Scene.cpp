@@ -93,9 +93,10 @@ void Scene::InitPhysics() {
   this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
   // Configuración para la simulación de cuerpos suaves.
- 
-  std::cout << "Air density: " << this->softBodyWorldInfo.air_density
-            << std::endl;
+  this->softBodyWorldInfo.m_broadphase = broadphase;
+  this->softBodyWorldInfo.m_dispatcher = dispatcher;
+  this->softBodyWorldInfo.m_gravity = this->dynamicsWorld->getGravity();
+  this->softBodyWorldInfo.m_sparsesdf.Initialize();
 }
 void Scene::InitGraphics() {
   // Crear Renderer, RenderWindow y RenderWindowInteractor.
@@ -135,14 +136,13 @@ void Scene::Loop() {
   // Sign up to receive TimerEvent
   vtkSmartPointer<vtkTimerCallback> callback =
       vtkSmartPointer<vtkTimerCallback>::New();
-      std::cout<<"llegue aca mother10"<<std::endl;
+
   callback->scene = std::shared_ptr<Scene>(this);
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
-std::cout<<this->softObjects[0]->softBody->getTotalMass()<<std::endl;
+  std::cout << this->softObjects[0]->softBody->getTotalMass() << std::endl;
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
-std::cout<<"llegue aca mother11"<<std::endl;
+
   this->renderWindowInteractor->Start();
-  std::cout<<"llegue aca mother12"<<std::endl;
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->UpdatePhysics(deltaTime);

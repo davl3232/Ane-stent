@@ -7,10 +7,9 @@
 #include <vector>
 
 #include <BulletSoftBody/btSoftBody.h>
-#include <btBulletDynamicsCommon.h>
-#include <LinearMath/btVector3.h>
 #include <LinearMath/btAlignedObjectArray.h>
 #include <LinearMath/btVector3.h>
+#include <btBulletDynamicsCommon.h>
 
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
@@ -21,10 +20,10 @@ class SceneSoftObject {
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btSoftBody> softBody;
   std::shared_ptr<btCollisionShape> collider;
-  
+
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
-  void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btScalar mass);
+  void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo);
   void UpdateVertices(btAlignedObjectArray<btScalar> vertices,
                       btAlignedObjectArray<int> indices);
 };

@@ -36,10 +36,10 @@ std::shared_ptr<SceneSoftObject> loadSoftSphere(std::shared_ptr<Scene> scene) {
 
   // Crear SceneRigidObject
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
-  object->UpdateSoftBody(scene->softBodyWorldInfo, 10);
+  object->UpdateSoftBody(scene->softBodyWorldInfo);
 
   object->name = "Soft Sphere";
-   std::cout<<"llegue aca mother8"<<std::endl;
+
   return object;
 }
 
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
   //     object->rigidBody->setWorldTransform(trans);
   //     scene->AddRigidObject(object);
   //   }
-  std::cout<<"llegue aca mother9"<<std::endl;
+
   scene->Loop();
   return EXIT_SUCCESS;
 }
