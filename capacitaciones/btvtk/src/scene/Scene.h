@@ -1,16 +1,15 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <memory>
-#include <vector>
-
-#include <btBulletDynamicsCommon.h>
-
-#include <vtkRenderWindowInteractor.h>
-#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
-
 #include "SceneRigidObject.h"
 #include "SceneSoftObject.h"
+
+#include <vector>
+
+#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
+
+#include <vtkRenderWindowInteractor.h>
+
 class Scene {
  private:
   std::vector<std::shared_ptr<SceneRigidObject>> rigidObjects;

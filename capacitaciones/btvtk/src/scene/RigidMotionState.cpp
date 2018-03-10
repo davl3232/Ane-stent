@@ -1,10 +1,8 @@
 #include "RigidMotionState.h"
 
-#include <vtkActor.h>
-#include <vtkTransform.h>
-
 #include "../util/ToString.h"
-#include "SceneRigidObject.h"
+
+#include <vtkTransform.h>
 
 RigidMotionState::RigidMotionState(
     std::shared_ptr<SceneRigidObject> rigidObject,

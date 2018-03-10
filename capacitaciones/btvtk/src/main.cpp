@@ -1,22 +1,9 @@
-#include <fstream>
-#include <iostream>
-#include <memory>
+#include "scene/Scene.h"
+#include "loaders/ModelLoader.h"
 
 #include <vtkCubeSource.h>
-#include <vtkSphereSource.h>
-
-#include <vtkActor.h>
-#include <vtkPolyDataAlgorithm.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
-#include <vtkSmartPointer.h>
-#include <vtkTransform.h>
-#include <vtkTransformPolyDataFilter.h>
-
-#include "loaders/ModelLoader.h"
-#include "scene/Scene.h"
-#include "scene/SceneRigidObject.h"
-#include "scene/SceneSoftObject.h"
 
 std::shared_ptr<SceneRigidObject> loadPlane() {
   // Crear source de cubo.
@@ -48,7 +35,6 @@ std::shared_ptr<SceneRigidObject> loadPlane() {
 }
 
 int main(int argc, char **argv) {
-  std::cout << btGetVersion() << std::endl;
   // Añadir plano
   std::shared_ptr<Scene> scene(new Scene());
   scene->AddRigidObject(loadPlane());

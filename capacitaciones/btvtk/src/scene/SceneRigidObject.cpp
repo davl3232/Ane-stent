@@ -1,10 +1,5 @@
 #include "SceneRigidObject.h"
 
-#include <memory>
-
-#include <vtkProperty.h>
-#include <vtkTransform.h>
-
 #include "RigidMotionState.h"
 
 void SceneRigidObject::UpdateRigidBody(btScalar mass) {

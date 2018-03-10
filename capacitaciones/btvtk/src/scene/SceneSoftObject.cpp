@@ -1,17 +1,10 @@
 #include "SceneSoftObject.h"
 
-#include <memory>
-
-#include "BulletSoftBody/btSoftBody.h"
+#include "btBulletDynamicsCommon.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 
 #include <vtkDataSet.h>
 #include <vtkMapper.h>
-#include <vtkPolyData.h>
-#include <vtkProperty.h>
-#include <vtkTransform.h>
-
-#include "RigidMotionState.h"
 
 SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
   this->actor = actor;

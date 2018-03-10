@@ -1,18 +1,13 @@
 #ifndef SCENE_SOFT_OBJECT_H
 #define SCENE_SOFT_OBJECT_H
 
-#include <chrono>
-#include <memory>
 #include <string>
-#include <vector>
+#include <memory>
 
-#include <BulletSoftBody/btSoftBody.h>
-#include <LinearMath/btAlignedObjectArray.h>
-#include <LinearMath/btVector3.h>
-#include <btBulletDynamicsCommon.h>
+#include "BulletSoftBody/btSoftBody.h"
 
-#include <vtkActor.h>
 #include <vtkSmartPointer.h>
+#include <vtkActor.h>
 
 class SceneSoftObject {
  public:

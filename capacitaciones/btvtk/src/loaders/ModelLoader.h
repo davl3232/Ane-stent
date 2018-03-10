@@ -4,8 +4,6 @@
 #include "../scene/SceneRigidObject.h"
 #include "../scene/SceneSoftObject.h"
 
-#include <memory>
-#include <string>
 #include <vector>
 
 class ModelLoader {

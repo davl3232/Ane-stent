@@ -2,7 +2,6 @@
 #define TO_STRING_H
 
 #include <sstream>
-#include <string>
 
 class ToString {
  public:

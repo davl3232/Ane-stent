@@ -1,21 +1,13 @@
 #include "Scene.h"
 
-#include <btBulletDynamicsCommon.h>
-
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
-#include "BulletSoftBody/btSoftRigidDynamicsWorld.h"
 
-#include <vtkAxesActor.h>
-#include <vtkCamera.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkNamedColors.h>
 #include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
+#include <vtkCamera.h>
 #include <vtkRenderer.h>
+#include <vtkAxesActor.h>
+#include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkRendererCollection.h>
-
-#include <chrono>
-#include <memory>
 
 class vtkTimerCallback : public vtkCommand {
  public:

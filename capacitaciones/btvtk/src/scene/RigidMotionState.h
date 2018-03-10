@@ -1,8 +1,6 @@
 #ifndef SCENE_MOTION_STATE_H
 #define SCENE_MOTION_STATE_H
 
-#include <memory>
-
 #include "SceneRigidObject.h"
 
 class RigidMotionState : public btMotionState {

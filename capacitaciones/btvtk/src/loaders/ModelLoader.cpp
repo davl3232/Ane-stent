@@ -1,25 +1,13 @@
 #include "ModelLoader.h"
 
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-
-#include "../scene/SceneRigidObject.h"
-#include "../scene/SceneSoftObject.h"
-
-#include <vtkActor.h>
+#include <vtkPolyData.h>
+#include <vtkTriangleStrip.h>
 #include <vtkDataSetMapper.h>
+#include <vtkXMLGenericDataObjectReader.h>
+#include <vtkGeometryFilter.h>
+#include <vtkUnstructuredGrid.h>
 #include <vtkDataSetSurfaceFilter.h>
 #include <vtkGenericDataObjectReader.h>
-#include <vtkGeometryFilter.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkSmartPointer.h>
-#include <vtkTriangleStrip.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkXMLGenericDataObjectReader.h>
 
 std::shared_ptr<btCollisionShape> createConvexHullCollider(
     std::vector<std::vector<double>> vertices) {

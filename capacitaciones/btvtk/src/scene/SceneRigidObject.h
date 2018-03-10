@@ -1,15 +1,13 @@
 #ifndef SCENE_RIGID_OBJECT_H
 #define SCENE_RIGID_OBJECT_H
 
-#include <chrono>
 #include <memory>
-#include <string>
+#include <chrono>
 
-#include <BulletSoftBody/btSoftBody.h>
 #include <btBulletDynamicsCommon.h>
 
-#include <vtkActor.h>
 #include <vtkSmartPointer.h>
+#include <vtkActor.h>
 
 /**
  * @brief Contiene la información necesaria para simular la física de un objeto
@@ -22,7 +20,6 @@ class SceneRigidObject : public std::enable_shared_from_this<SceneRigidObject> {
   std::shared_ptr<btCollisionShape> collider;
   std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btRigidBody> rigidBody;
-  std::shared_ptr<btSoftBody> softBody;
 
   SceneRigidObject(vtkSmartPointer<vtkActor> actor,
                    std::shared_ptr<btCollisionShape> collider);
