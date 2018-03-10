@@ -1,0 +1,16 @@
+# vtk DataFile Version 4.2
+vtk output
+ASCII
+DATASET POLYDATA
+POINTS 4 float
+-1 -1 0 1 -1 0 1 1 0 
+-1 1 0 
+METADATA
+INFORMATION 1
+NAME L2_NORM_RANGE LOCATION vtkDataArray
+DATA 2 1.41421 1.41421 
+
+POLYGONS 2 8
+3 0 1 2 
+3 2 3 0 
+
