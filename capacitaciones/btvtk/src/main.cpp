@@ -52,13 +52,23 @@ int main(int argc, char **argv) {
   // Añadir plano
   std::shared_ptr<Scene> scene(new Scene());
   scene->AddRigidObject(loadPlane());
-  //   Añadir modelos desde archivos en consola
+  // Añadir modelos desde archivos en consola
   for (size_t i = 1; i < argc; i++) {
     std::shared_ptr<SceneSoftObject> object =
         ModelLoader::LoadSoft(std::string(argv[i]), scene->softBodyWorldInfo);
 
     std::cout << object->softBody->getTotalMass() << std::endl;
     scene->AddSoftObject(object);
+  }
+
+  //   Añadir modelos desde archivos en consola
+  for (size_t i = 1; i < argc; i++) {
+    std::shared_ptr<SceneRigidObject> object =
+        ModelLoader::Load(std::string(argv[i]));
+    object->UpdateRigidBody(1);
+    object->rigidBody->setWorldTransform(
+        btTransform(btQuaternion::getIdentity(), btVector3(0, 10, 0)));
+    scene->AddRigidObject(object);
   }
 
   scene->Loop();
