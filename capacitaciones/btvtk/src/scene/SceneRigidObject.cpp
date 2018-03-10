@@ -11,7 +11,9 @@ void SceneRigidObject::UpdateRigidBody(btScalar mass) {
   btVector3 inertia(0, 0, 0);
   this->collider->calculateLocalInertia(mass, inertia);
   this->motionState = std::shared_ptr<btMotionState>(
-      new RigidMotionState(shared_from_this(), btTransform::getIdentity()));
+      new btDefaultMotionState(btTransform::getIdentity()));
+  // this->motionState = std::shared_ptr<btMotionState>(
+  //     new RigidMotionState(shared_from_this(), btTransform::getIdentity()));
   btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(
       mass, this->motionState.get(), this->collider.get(), inertia);
   std::shared_ptr<btRigidBody> rigidBody(new btRigidBody(rigidBodyCI));

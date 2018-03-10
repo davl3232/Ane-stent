@@ -171,6 +171,7 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
   mapper->SetInputConnection(reader->GetOutputPort());
   vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
   actor->SetMapper(mapper);
+
   std::cout << "Terminado." << std::endl;
 
   // Crear colisionador
