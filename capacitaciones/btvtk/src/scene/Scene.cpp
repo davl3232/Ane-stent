@@ -139,6 +139,7 @@ void Scene::Loop() {
 
   callback->scene = std::shared_ptr<Scene>(this);
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
+  std::cout << "Mass: " << this->softObjects[0]->softBody->getTotalMass() << std::endl;
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
   this->renderWindowInteractor->Start();
 }
