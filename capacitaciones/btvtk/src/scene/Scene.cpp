@@ -136,10 +136,11 @@ void Scene::Loop() {
   // Sign up to receive TimerEvent
   vtkSmartPointer<vtkTimerCallback> callback =
       vtkSmartPointer<vtkTimerCallback>::New();
-
+  
   callback->scene = std::shared_ptr<Scene>(this);
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
+  std::cout<<"jgfjgfvhgfjgghjgfjhghjgjhg"<<endl;
   this->renderWindowInteractor->Start();
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {

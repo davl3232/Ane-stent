@@ -24,7 +24,8 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
 
   // Creación de los arreglos
   btVector3 v[dataSet->GetNumberOfPoints()];
-
+  btScalar s[(dataSet->GetNumberOfPoints()* 3)];
+  int triangles [dataSet->GetNumberOfPoints()];
   // Extraer puntos del DataSet
   for (vtkIdType i = 0; i < dataSet->GetNumberOfPoints(); i++) {
     double p[3];
@@ -35,14 +36,36 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
               << ")" << std::endl;
 
     v[i] = vi;
+    triangles[i]=i;
+    s[i*3]=p[0];
+    s[(i*3)+1]=p[1];
+    s[(i*3)+2]=p[2];
   }
+
   std::cout << "Softbody loaded: Inserted " << dataSet->GetNumberOfPoints()
             << " vertices." << std::endl;
+/***
+ *
+btSoftBody * btSoftBodyHelpers::CreateFromTriMesh 	( 	btSoftBodyWorldInfo &  	worldInfo,
+		const btScalar *  	vertices,
+		const int *  	triangles,
+		int  	ntriangles,
+		bool  	randomizeConstraints = true 
+	) 	
+ * 
+*/
+   for (int i = 0; i < dataSet->GetNumberOfPoints()*3; i++) {
+       std::cout<<s[i]<<std::endl;
+    
+   }
+this->softBody =
+      std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
+          worldInfo, &s[0], &triangles[0],dataSet->GetNumberOfPoints()/3.0 , true));
 
-  this->softBody =
+  /*this->softBody =
       std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromConvexHull(
-          worldInfo, &v[0], dataSet->GetNumberOfPoints(), true));
-
+          worldInfo, &v[0], dataSet->GetNumberOfPoints(), true));*/
+  std::cout<<"softBody: "<<this->softBody->getTotalMass()<<std::endl;
   btSoftBody::Material *pm = this->softBody->appendMaterial();
   pm->m_kLST = 0.75;
 
@@ -75,4 +98,5 @@ void SceneSoftObject::UpdateMesh() {
     std::cout << "Punto " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
               << ")" << std::endl;
   }
+
 }
