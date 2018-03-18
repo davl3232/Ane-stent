@@ -14,7 +14,7 @@ ADD_EXECUTABLE(main
 	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneRigidObject.cpp src/scene/SceneSoftObject.cpp src/scene/Scene.cpp src/scene/RigidMotionState.cpp src/util/ToString.cpp
 )
 message(${BULLET_LIBRARIES})
-target_link_libraries(main ${VTK_LIBRARIES} BulletSoftBody ${BULLET_LIBRARIES})
+target_link_libraries(${VTK_LIBRARIES} BulletSoftBody ${BULLET_LIBRARIES})
 
 IF (INTERNAL_ADD_POSTFIX_EXECUTABLE_NAMES)
 			SET_TARGET_PROPERTIES(main PROPERTIES  DEBUG_POSTFIX "_Debug")
