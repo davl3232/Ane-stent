@@ -35,12 +35,19 @@ class vtkTimerCallback : public vtkCommand {
       this->newTime = std::chrono::steady_clock::now();
 
       // Calcular tiempo transcurrido.
-      this->deltaTime = this->newTime - this->prevTime;
+      if (this->prevTime.count() >0){
+        this->deltaTime = this->newTime - this->prevTime;
 
-      scene->Update(deltaTime);
-
-      // Reiniciar tiempo.
+         scene->Update(deltaTime);
+         // Reiniciar tiempo.
       prevTime = newTime;
+      }else{
+         this->deltaTime = this->newTime;
+         scene->Update(deltaTime);
+        // Reiniciar tiempo.
+        prevTime = newTime;
+      }
+     
 
       ++this->TimerCount;
     }
@@ -141,7 +148,6 @@ void Scene::Loop() {
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
   std::cout << "Mass: " << this->softObjects[0]->softBody->getTotalMass() << std::endl;
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
-  std::cout<<"jgfjgfvhgfjgghjgfjhghjgjhg"<<endl;
   this->renderWindowInteractor->Start();
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {

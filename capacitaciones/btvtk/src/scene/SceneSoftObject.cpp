@@ -4,6 +4,10 @@
 
 #include "BulletSoftBody/btSoftBody.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
+#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+
+
+
 
 #include <vtkDataSet.h>
 #include <vtkMapper.h>
@@ -41,39 +45,37 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
     s[(i*3)+1]=p[1];
     s[(i*3)+2]=p[2];
   }
+int tri[dataSet->GetNumberOfPoints()][3]={
+  {0,1,2},
+  {3,4,5},
+  {0,3,4},
+  {0,4,1},
+  {1,4,2},
+  {4,5,2}
+};
 
   std::cout << "Softbody loaded: Inserted " << dataSet->GetNumberOfPoints()
             << " vertices." << std::endl;
-/***
- *
-btSoftBody * btSoftBodyHelpers::CreateFromTriMesh 	( 	btSoftBodyWorldInfo &  	worldInfo,
-		const btScalar *  	vertices,
-		const int *  	triangles,
-		int  	ntriangles,
-		bool  	randomizeConstraints = true 
-	) 	
- * 
-*/
-   for (int i = 0; i < dataSet->GetNumberOfPoints()*3; i++) {
-       std::cout<<s[i]<<std::endl;
-    
-   }
 this->softBody =
       std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
-          worldInfo, &s[0], &triangles[0],dataSet->GetNumberOfPoints()/3.0 , true));
-
-  /*this->softBody =
-      std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromConvexHull(
-          worldInfo, &v[0], dataSet->GetNumberOfPoints(), true));*/
+          worldInfo, &s[0], &tri[0][0],6.0, true));
+  
+  
   std::cout<<"softBody: "<<this->softBody->getTotalMass()<<std::endl;
+  //debug
+  this->softBody-> predictMotion(10.0);
+  //-----
   btSoftBody::Material *pm = this->softBody->appendMaterial();
   pm->m_kLST = 0.75;
 
   this->softBody->generateBendingConstraints(4, pm);
-  this->softBody->m_cfg.piterations = 2;
-  this->softBody->m_cfg.kDF = 0.75;
+  this->softBody->m_cfg.piterations = 5;
+  this->softBody->m_cfg.kDF = 0.5;
+  this->softBody->m_cfg.kMT				=	0.05;
   this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
   this->softBody->randomizeConstraints();
+	this->softBody->scale(btVector3(6,6,6));
+	this->softBody->setTotalMass(100,true);
   // this->softBody->getCollisionShape()->setMargin(0.1f);
   // this->UpdateMesh();
 }
