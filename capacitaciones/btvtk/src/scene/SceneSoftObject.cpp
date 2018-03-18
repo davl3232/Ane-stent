@@ -6,9 +6,6 @@
 #include "BulletSoftBody/btSoftBodyHelpers.h"
 #include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
-
-
-
 #include <vtkDataSet.h>
 #include <vtkMapper.h>
 #include <vtkPolyData.h>
@@ -21,7 +18,7 @@ SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
   this->actor = actor;
 }
 SceneSoftObject::~SceneSoftObject() {}
-void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
+void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btTransform transform) {
   vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
 
   vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
@@ -35,6 +32,7 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo) {
     double p[3];
     dataSet->GetPoint(i, p);
     btVector3 vi(p[0], p[1], p[2]);
+    vi = transform * vi;
     std::cout << std::endl;
     std::cout << "Punto " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
               << ")" << std::endl;
@@ -81,6 +79,7 @@ this->softBody =
 }
 
 void SceneSoftObject::UpdateMesh() {
+  std::cout << "UPDATING MESH: " << this->name <<std::endl;
   vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
 
   vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
@@ -89,16 +88,15 @@ void SceneSoftObject::UpdateMesh() {
   // std::cout << "ShapeType: "
   //           << this->softBody->getCollisionShape()->isSoftBody() <<
   //           std::endl;
-  btConvexHullShape *btc =
-      dynamic_cast<btConvexHullShape *>(this->softBody->getCollisionShape());
-  std::cout << "Puntos del collisionShape: " << btc->getNumPoints()
+  std::cout << "Puntos del collisionShape: " << this->softBody->m_nodes.size()
             << std::endl;
-  const btVector3 *points = btc->getPoints();
-  for (int i = 0; i < btc->getNumPoints(); i++) {
-    btVector3 p = points[i];
+  // const btVector3 *points = btc->getPoints();
+  for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
+    btVector3 pos = this->softBody->m_nodes[i].m_x;
     std::cout << std::endl;
-    std::cout << "Punto " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
+    std::cout << "Punto " << i << ": (" << pos.getX() << "," << pos.getY() << "," << pos.getZ()
               << ")" << std::endl;
   }
+  std::cout << "UPDATED." << this->name <<std::endl;
 
 }

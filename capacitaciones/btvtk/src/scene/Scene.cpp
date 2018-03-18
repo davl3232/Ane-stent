@@ -35,18 +35,12 @@ class vtkTimerCallback : public vtkCommand {
       this->newTime = std::chrono::steady_clock::now();
 
       // Calcular tiempo transcurrido.
-      if (this->prevTime.count() >0){
         this->deltaTime = this->newTime - this->prevTime;
-
-         scene->Update(deltaTime);
-         // Reiniciar tiempo.
-      prevTime = newTime;
-      }else{
-         this->deltaTime = this->newTime;
+ 
          scene->Update(deltaTime);
         // Reiniciar tiempo.
         prevTime = newTime;
-      }
+      
      
 
       ++this->TimerCount;
@@ -155,13 +149,12 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
-  std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
+  std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
   // Llamar actualización de física de cada objeto.
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdateMesh();
   }
-  this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
   this->rigidObjects.push_back(object);

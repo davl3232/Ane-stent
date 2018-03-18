@@ -56,13 +56,13 @@ int main(int argc, char **argv) {
   for (size_t i = 1; i < argc; i++) {
     std::shared_ptr<SceneSoftObject> object =
         ModelLoader::LoadSoft(std::string(argv[i]), scene->softBodyWorldInfo);
-
+    object->softBody->m_worldInfo = &(scene->softBodyWorldInfo);
     std::cout << object->softBody->getTotalMass() << std::endl;
     scene->AddSoftObject(object);
   }
 
   //   Añadir modelos desde archivos en consola
-  for (size_t i = 1; i < argc; i++) {
+  /*for (size_t i = 1; i < argc; i++) {
     std::shared_ptr<SceneRigidObject> object =
         ModelLoader::Load(std::string(argv[i]));
     object->UpdateRigidBody(1);
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
         btTransform(btQuaternion::getIdentity(), btVector3(0, 10, 0)));
     scene->AddRigidObject(object);
   }
-
+*/
   scene->Loop();
   return EXIT_SUCCESS;
 }

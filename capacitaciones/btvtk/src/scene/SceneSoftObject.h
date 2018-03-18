@@ -22,7 +22,7 @@ class SceneSoftObject {
 
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
-  void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo);
+  void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btTransform transform = btTransform::getIdentity());
   void UpdateMesh();
 };
 
