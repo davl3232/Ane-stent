@@ -43,7 +43,7 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btTransform
     s[(i*3)+1]=p[1];
     s[(i*3)+2]=p[2];
   }
-int tri[dataSet->GetNumberOfPoints()][3]={
+int tri[][3]={
   {0,1,2},
   {3,4,5},
   {0,3,4},
