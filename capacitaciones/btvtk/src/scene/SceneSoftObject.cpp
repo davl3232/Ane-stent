@@ -18,68 +18,102 @@ SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
   this->actor = actor;
 }
 SceneSoftObject::~SceneSoftObject() {}
-void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btTransform transform) {
-  vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
+void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo,
+                                     btTransform transform) {
+  vtkSmartPointer<vtkPolyData> polyData =
+      vtkPolyData::SafeDownCast(this->actor->GetMapper()->GetInputAsDataSet());
 
-  vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
+  // Extraer puntos del polydata
+  vtkSmartPointer<vtkCellArray> polys = polyData->GetPolys();
+
+  polys->InitTraversal();
+  vtkSmartPointer<vtkIdList> idList = vtkSmartPointer<vtkIdList>::New();
 
   // Creación de los arreglos
-  btVector3 v[dataSet->GetNumberOfPoints()];
-  btScalar s[(dataSet->GetNumberOfPoints()* 3)];
-  int triangles [dataSet->GetNumberOfPoints()];
-  // Extraer puntos del DataSet
-  for (vtkIdType i = 0; i < dataSet->GetNumberOfPoints(); i++) {
+  int numVerts = polyData->GetNumberOfPoints();
+  btScalar verts[numVerts][3];
+  int numTris = polys->GetNumberOfCells();
+  int tris[numTris][3];
+
+  // Vértices transformados para VTK.
+  vtkSmartPointer<vtkPoints> newpts = vtkSmartPointer<vtkPoints>::New();
+  // Recorrer vértices existentes.
+  vtkSmartPointer<vtkPoints> oldpts = polyData->GetPoints();
+  for (vtkIdType i = 0; i < numVerts; i++) {
+    // Obtener vértice.
     double p[3];
-    dataSet->GetPoint(i, p);
-    btVector3 vi(p[0], p[1], p[2]);
-    vi = transform * vi;
-    std::cout << std::endl;
-    std::cout << "Punto " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
+    oldpts->GetPoint(i, p);
+
+    // Transformar vértice.
+    btVector3 pt(p[0], p[1], p[2]);
+    pt = transform * pt;
+
+    // Insertar vértice transformado en arreglo para VTK.
+    p[0] = pt[0];
+    p[1] = pt[1];
+    p[2] = pt[2];
+    newpts->InsertNextPoint(p);
+
+    // Insertar vértice transformado en arreglo para Bullet.
+    verts[i][0] = pt[0];
+    verts[i][1] = pt[1];
+    verts[i][2] = pt[2];
+
+    std::cout << "Vértice " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
               << ")" << std::endl;
-
-    v[i] = vi;
-    triangles[i]=i;
-    s[i*3]=p[0];
-    s[(i*3)+1]=p[1];
-    s[(i*3)+2]=p[2];
   }
-int tri[dataSet->GetNumberOfPoints()][3]={
-  {0,1,2},
-  {3,4,5},
-  {0,3,4},
-  {0,4,1},
-  {1,4,2},
-  {4,5,2}
-};
 
-  std::cout << "Softbody loaded: Inserted " << dataSet->GetNumberOfPoints()
-            << " vertices." << std::endl;
-this->softBody =
+  // Actualizar puntos de VTK.
+  newpts->Modified();
+  polyData->SetPoints(newpts);
+
+  size_t triInd = 0;
+  // Recorrer polígonos de VTK.
+  while (polys->GetNextCell(idList)) {
+    std::cout << std::endl;
+    std::cout << "Polígono con " << idList->GetNumberOfIds()
+              << " puntos:" << std::endl;
+
+    // Recorrer vértices del polígono.
+    for (vtkIdType pointId = 0; pointId < idList->GetNumberOfIds(); pointId++) {
+      // Obtener punto.
+      double p[3];
+      vtkIdType id = idList->GetId(pointId);
+
+      // Guardar id del vértice en arreglo para Bullet.
+      tris[triInd][pointId] = id;
+      polyData->GetPoint(id, p);
+
+      std::cout << "Vértice " << id << ": (" << p[0] << "," << p[1] << ","
+                << p[2] << ")" << std::endl;
+    }
+    triInd++;
+  }
+
+  // Crear softbody en Bullet a partir de los arreglos.
+  this->softBody =
       std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
-          worldInfo, &s[0], &tri[0][0],6.0, true));
-  
-  
-  std::cout<<"softBody: "<<this->softBody->getTotalMass()<<std::endl;
-  //debug
-  this->softBody-> predictMotion(10.0);
-  //-----
+          worldInfo, &verts[0][0], &tris[0][0], numTris, true));
+
+  std::cout << "softBody: " << this->softBody->getTotalMass() << std::endl;
+  // // debug
+  // this->softBody->predictMotion(10.0);
+  // //-----
   btSoftBody::Material *pm = this->softBody->appendMaterial();
-  pm->m_kLST = 0.75;
+  pm->m_kLST = 0.1;
 
   this->softBody->generateBendingConstraints(4, pm);
   this->softBody->m_cfg.piterations = 5;
   this->softBody->m_cfg.kDF = 0.5;
-  this->softBody->m_cfg.kMT				=	0.05;
+  this->softBody->m_cfg.kMT = 0.05;
   this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
   this->softBody->randomizeConstraints();
-	this->softBody->scale(btVector3(6,6,6));
-	this->softBody->setTotalMass(100,true);
-  // this->softBody->getCollisionShape()->setMargin(0.1f);
-  // this->UpdateMesh();
+  this->softBody->setTotalMass(10, true);
+  this->UpdateMesh();
 }
 
 void SceneSoftObject::UpdateMesh() {
-  std::cout << "UPDATING MESH: " << this->name <<std::endl;
+  std::cout << "UPDATING MESH: " << this->name << std::endl;
   vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
 
   vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
@@ -91,12 +125,24 @@ void SceneSoftObject::UpdateMesh() {
   std::cout << "Puntos del collisionShape: " << this->softBody->m_nodes.size()
             << std::endl;
   // const btVector3 *points = btc->getPoints();
+
+  vtkSmartPointer<vtkPolyData> polyData =
+      vtkPolyData::SafeDownCast(this->actor->GetMapper()->GetInputAsDataSet());
+
+  // Vértices transformados para VTK.
+  vtkSmartPointer<vtkPoints> newpts = vtkSmartPointer<vtkPoints>::New();
   for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
     btVector3 pos = this->softBody->m_nodes[i].m_x;
     std::cout << std::endl;
-    std::cout << "Punto " << i << ": (" << pos.getX() << "," << pos.getY() << "," << pos.getZ()
-              << ")" << std::endl;
-  }
-  std::cout << "UPDATED." << this->name <<std::endl;
+    std::cout << "Punto " << i << ": (" << pos.getX() << "," << pos.getY()
+              << "," << pos.getZ() << ")" << std::endl;
 
+    // Insertar vértice transformado en arreglo para VTK.
+    newpts->InsertNextPoint(pos[0], pos[1], pos[2]);
+  }
+  // Actualizar puntos de VTK.
+  newpts->Modified();
+  polyData->SetPoints(newpts);
+
+  std::cout << "UPDATED." << this->name << std::endl;
 }

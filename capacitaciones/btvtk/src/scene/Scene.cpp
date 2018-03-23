@@ -25,6 +25,7 @@ class vtkTimerCallback : public vtkCommand {
     vtkTimerCallback *cb = new vtkTimerCallback;
     cb->TimerCount = 0;
     cb->deltaTime = std::chrono::duration<double>(1. / 60);
+    cb->isFirstExecution = true;
     return cb;
   }
 
@@ -35,13 +36,18 @@ class vtkTimerCallback : public vtkCommand {
       this->newTime = std::chrono::steady_clock::now();
 
       // Calcular tiempo transcurrido.
+      if (this->isFirstExecution) {
+        this->isFirstExecution = false;
+      } else {
         this->deltaTime = this->newTime - this->prevTime;
- 
-         scene->Update(deltaTime);
-        // Reiniciar tiempo.
-        prevTime = newTime;
-      
-     
+      }
+
+      double count = this->deltaTime.count();
+      std::cout << "DT: " << count << std::endl;
+
+      scene->Update(this->deltaTime);
+      // Reiniciar tiempo.
+      this->prevTime = this->newTime;
 
       ++this->TimerCount;
     }
@@ -49,6 +55,7 @@ class vtkTimerCallback : public vtkCommand {
 
  private:
   int TimerCount;
+  bool isFirstExecution;
   std::chrono::time_point<std::chrono::steady_clock> prevTime;
   std::chrono::time_point<std::chrono::steady_clock> newTime;
   std::chrono::duration<double> deltaTime;
@@ -137,10 +144,11 @@ void Scene::Loop() {
   // Sign up to receive TimerEvent
   vtkSmartPointer<vtkTimerCallback> callback =
       vtkSmartPointer<vtkTimerCallback>::New();
-  
+
   callback->scene = std::shared_ptr<Scene>(this);
   renderWindowInteractor->AddObserver(vtkCommand::TimerEvent, callback);
-  std::cout << "Mass: " << this->softObjects[0]->softBody->getTotalMass() << std::endl;
+  std::cout << "Mass: " << this->softObjects[0]->softBody->getTotalMass()
+            << std::endl;
   int timerId = renderWindowInteractor->CreateRepeatingTimer(16);
   this->renderWindowInteractor->Start();
 }
@@ -151,7 +159,7 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
   std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
-  // Llamar actualización de física de cada objeto.
+  // Llamar actualización de física de cada objeto suave.
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdateMesh();
   }
