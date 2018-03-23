@@ -100,7 +100,7 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo,
   // this->softBody->predictMotion(10.0);
   // //-----
   btSoftBody::Material *pm = this->softBody->appendMaterial();
-  pm->m_kLST = 0.1;
+  pm->m_kLST = 0.005;
 
   this->softBody->generateBendingConstraints(4, pm);
   this->softBody->m_cfg.piterations = 5;
