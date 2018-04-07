@@ -1,0 +1,17 @@
+enable_testing()
+
+add_executable(tcarga-vertices CargaVertices.cpp ../src/loaders/ModelLoader.cpp ../src/scene/SceneRigidObject.cpp ../src/scene/SceneSoftObject.cpp ../src/scene/Scene.cpp ../src/scene/RigidMotionState.cpp ../src/util/ToString.cpp)
+IF (APPLE)
+	target_link_libraries(tcarga-vertices ${VTK_LIBRARIES} ${BULLET_LIBRARIES})
+ELSE (APPLE)
+	target_link_libraries(tcarga-vertices ${VTK_LIBRARIES} BulletSoftBody ${BULLET_LIBRARIES})
+ENDIF (APPLE)
+add_test("Carga vértices" tcarga-vertices ../modelos/cubo.vtk ../test/casos/vertices.tsv)
+
+add_executable(tcarga-caras CargaCaras.cpp ../src/loaders/ModelLoader.cpp ../src/scene/SceneRigidObject.cpp ../src/scene/SceneSoftObject.cpp ../src/scene/Scene.cpp ../src/scene/RigidMotionState.cpp ../src/util/ToString.cpp)
+IF (APPLE)
+	target_link_libraries(tcarga-caras ${VTK_LIBRARIES} ${BULLET_LIBRARIES})
+ELSE (APPLE)
+	target_link_libraries(tcarga-caras ${VTK_LIBRARIES} BulletSoftBody ${BULLET_LIBRARIES})
+ENDIF (APPLE)
+add_test("Carga aristas" tcarga-caras ../modelos/cubo.vtk ../test/casos/caras.tsv)

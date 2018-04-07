@@ -22,7 +22,6 @@ class SceneRigidObject : public std::enable_shared_from_this<SceneRigidObject> {
   std::shared_ptr<btCollisionShape> collider;
   std::shared_ptr<btMotionState> motionState;
   std::shared_ptr<btRigidBody> rigidBody;
-  std::shared_ptr<btSoftBody> softBody;
 
   SceneRigidObject(vtkSmartPointer<vtkActor> actor,
                    std::shared_ptr<btCollisionShape> collider);

@@ -98,7 +98,7 @@ void Scene::InitPhysics() {
           dispatcher, broadphase, solver, collisionConfiguration));
 
   // Se aplica gravedad sobre el eje y.
-  this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
+  this->dynamicsWorld->setGravity(btVector3(0, 0, 0));
 
   // Configuración para la simulación de cuerpos suaves.
   this->softBodyWorldInfo.m_broadphase = broadphase;

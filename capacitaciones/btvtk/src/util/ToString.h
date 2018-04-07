@@ -23,5 +23,11 @@ class ToString {
 
     return sstr.str();
   }
+  template <typename T>
+  static inline std::string Vec3Arr(T *vec) {
+    std::stringstream sstr;
+    sstr << "(" << vec[0] << "," << vec[1] << "," << vec[2] << ")";
+    return sstr.str();
+  }
 };
 #endif
