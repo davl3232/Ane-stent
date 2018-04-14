@@ -31,6 +31,6 @@ class SceneRigidObject : public std::enable_shared_from_this<SceneRigidObject> {
 
   ~SceneRigidObject();
   void UpdateRigidBody(btScalar mass = 0);
-  void UpdatePhysics(std::chrono::duration<double> deltaTime);
+  virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
 };
 #endif

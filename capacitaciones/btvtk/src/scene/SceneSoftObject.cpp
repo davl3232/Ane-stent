@@ -12,14 +12,15 @@
 #include <vtkProperty.h>
 #include <vtkTransform.h>
 
+#include "../util/ToString.h"
 #include "RigidMotionState.h"
 
 SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
   this->actor = actor;
 }
 SceneSoftObject::~SceneSoftObject() {}
-void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo,
-                                     btTransform transform) {
+void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
+                                   btTransform transform) {
   vtkSmartPointer<vtkPolyData> polyData =
       vtkPolyData::SafeDownCast(this->actor->GetMapper()->GetInputAsDataSet());
 
@@ -96,14 +97,58 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo,
           worldInfo, &verts[0][0], &tris[0][0], numTris, true));
 
   std::cout << "softBody: " << this->softBody->getTotalMass() << std::endl;
-  // // debug
-  // this->softBody->predictMotion(10.0);
-  // //-----
+  // btScalar m_kLST; // Linear stiffness coefficient [0,1]
+  // btScalar m_kAST; // Area/Angular stiffness coefficient [0,1]
+  // btScalar m_kVST; // Volume stiffness coefficient [0,1]
   btSoftBody::Material *pm = this->softBody->appendMaterial();
-  pm->m_kLST = .5;
-  pm->m_kAST = .5;
-  pm->m_kVST = 1;
+  pm->m_kLST = 1;
+  pm->m_kAST = 1;
+  pm->m_kVST = 0.01;
 
+  // btSoftBody::Config::kVCF; // Velocities correction factor (Baumgarte)
+  // define the amount of correction per time step for drift solver (sometimes
+  // referred as ERP in rigid bodies solvers).
+
+  // btSoftBody::Config::kDP; // Damping coefficient [0,1]
+  // damping, zero = no damping, one= full damping.
+
+  // btSoftBody::Config::kDG; // Drag coefficient [0,+inf]
+  // [aerodynamic] kDG=0 mean no drag.
+
+  // btSoftBody::Config::kLF; // Lift coefficient [0,+inf]
+  // [aerodynamic]=> is a factor of the lift force kLF=0 mean no lift
+
+  // btSoftBody::Config::kPR; // Pressure coefficient [-inf,+inf]
+  // [aerodynamic]=> is a factor of pressure.
+
+  // btSoftBody::Config::kVC; // Volume conversation coefficient [0,+inf]
+  // when 'setPose(true,...)' as been called, define the magnitude of the force
+  // used to conserve volume.
+
+  // btSoftBody::Config::kDF; // Dynamic friction coefficient [0,1]
+  // friction, kDF=0 mean sliding, kDF=1 mean sticking.
+
+  // btSoftBody::Config::kMT; // Pose matching coefficient [0,1]
+  // when 'setPose(...,true)' as been called, define the factor used for pose
+  // matching.
+
+  // btSoftBody::Config::kCHR; // Rigid contacts hardness [0,1]
+  // define how 'soft' contact with rigid bodies are, kCHR=0 mean no penetration
+  // correction, 1 mean full correction.
+
+  // btSoftBody::Config::kKHR; // Kinetic contacts hardness [0,1]
+  // define how 'soft' contact with kinetic/static bodies are, kKHR=0 mean no
+  // penetration correction, 1 mean full correction.
+
+  // btSoftBody::Config::kSHR; // Soft contacts hardness [0,1]
+  // define how 'soft' contact with other soft bodies are, kSHR=0 mean no
+  // penetration correction, 1 mean full correction.
+
+  // btSoftBody::Config::kAHR; // Anchors hardness [0,1]
+  // define how 'soft' anchor constraint (joint) are, kAHR=0 mean no drift
+  // correction, 1 mean full correction.
+
+  // btSoftBody::Config::maxvolume; // Maximum volume ratio for pose
   this->softBody->generateBendingConstraints(4, pm);
   this->softBody->m_cfg.piterations = 5;
   this->softBody->m_cfg.kDF = 0.5;
@@ -115,18 +160,13 @@ void SceneSoftObject::UpdateSoftBody(btSoftBodyWorldInfo &worldInfo,
 }
 
 void SceneSoftObject::UpdateMesh() {
-  std::cout << "UPDATING MESH: " << this->name << std::endl;
+  // std::cout << "ACTUALIZANDO MAYA: " << this->name << std::endl;
   vtkSmartPointer<vtkMapper> mapper = this->actor->GetMapper();
 
   vtkSmartPointer<vtkDataSet> dataSet = mapper->GetInput();
-
-  this->softBody->getCollisionShape()->getShapeType();
-  // std::cout << "ShapeType: "
-  //           << this->softBody->getCollisionShape()->isSoftBody() <<
-  //           std::endl;
-  std::cout << "Puntos del collisionShape: " << this->softBody->m_nodes.size()
-            << std::endl;
-  // const btVector3 *points = btc->getPoints();
+  // std::cout << "Puntos del collisionShape: " <<
+  // this->softBody->m_nodes.size()
+  //           << std::endl;
 
   vtkSmartPointer<vtkPolyData> polyData =
       vtkPolyData::SafeDownCast(this->actor->GetMapper()->GetInputAsDataSet());
@@ -135,9 +175,8 @@ void SceneSoftObject::UpdateMesh() {
   vtkSmartPointer<vtkPoints> newpts = vtkSmartPointer<vtkPoints>::New();
   for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
     btVector3 pos = this->softBody->m_nodes[i].m_x;
-    std::cout << std::endl;
-    std::cout << "Punto " << i << ": (" << pos.getX() << "," << pos.getY()
-              << "," << pos.getZ() << ")" << std::endl;
+    // std::cout << "Punto " << i << ": " << ToString::btVector3(pos) <<
+    // std::endl;
 
     // Insertar vértice transformado en arreglo para VTK.
     newpts->InsertNextPoint(pos[0], pos[1], pos[2]);
@@ -146,5 +185,34 @@ void SceneSoftObject::UpdateMesh() {
   newpts->Modified();
   polyData->SetPoints(newpts);
 
-  std::cout << "UPDATED." << this->name << std::endl;
+  // std::cout << "ACTUALIZADA." << this->name << std::endl;
+}
+
+btVector3 SceneSoftObject::getCenterOfGeometry() {
+  btVector3 centerOfGeometry(0, 0, 0);
+  for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
+    btSoftBody::Node node = this->softBody->m_nodes[i];
+    centerOfGeometry += node.m_x;
+  }
+  return centerOfGeometry / double(this->softBody->m_nodes.size());
+}
+
+void SceneSoftObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {
+  btVector3 centerOfGeometry = this->getCenterOfGeometry();
+  for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
+    btSoftBody::Node node = this->softBody->m_nodes[i];
+    btVector3 pos = node.m_x;
+    btVector3 normal = pos - centerOfGeometry;
+    btVector3 force = normal * 1000;
+    this->softBody->addForce(force, i);
+    // btVector3 force = node.m_n * 100;
+    // btVector3 pos = node.m_x + force * deltaTime.count();
+    if (i == 0) {
+      std::cout << "Punto " << i << ": " << ToString::btVector3(pos)
+                << std::endl;
+      std::cout << "Fuerza: " << ToString::btVector3(force) << std::endl;
+    }
+  }
+  // this->softBody->updatePose();
+  this->softBody->applyForces();
 }

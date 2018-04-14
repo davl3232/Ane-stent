@@ -22,8 +22,12 @@ class SceneSoftObject {
 
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
-  void UpdateSoftBody(btSoftBodyWorldInfo &worldInfo, btTransform transform = btTransform::getIdentity());
+  void InitSoftBody(btSoftBodyWorldInfo &worldInfo,
+                    btTransform transform = btTransform::getIdentity());
   void UpdateMesh();
+  virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
+
+  btVector3 getCenterOfGeometry();
 };
 
 #endif  // !SCENE_SOFT_OBJECT_H

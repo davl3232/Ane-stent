@@ -1,6 +1,7 @@
 #ifndef TO_STRING_H
 #define TO_STRING_H
 
+#include <btBulletDynamicsCommon.h>
 #include <sstream>
 #include <string>
 
@@ -27,6 +28,11 @@ class ToString {
   static inline std::string Vec3Arr(T *vec) {
     std::stringstream sstr;
     sstr << "(" << vec[0] << "," << vec[1] << "," << vec[2] << ")";
+    return sstr.str();
+  }
+  static inline std::string btVector3(btVector3 vec) {
+    std::stringstream sstr;
+    sstr << "(" << vec.getX() << "," << vec.getY() << "," << vec.getZ() << ")";
     return sstr.str();
   }
 };

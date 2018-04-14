@@ -326,7 +326,8 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadXMLSoft(
   std::cout << "\tCreando SceneSoftObject...";
 
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
-  object->UpdateSoftBody(worldInfo , btTransform(btMatrix3x3::getIdentity(),btVector3(0,20,0)));
+  object->InitSoftBody(
+      worldInfo, btTransform(btMatrix3x3::getIdentity(), btVector3(0, 20, 0)));
   //   object->softBody->setCollisionShape(createConvexHullCollider(polyData).get());
   object->name = fileName;
 
@@ -381,7 +382,8 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadTXTSoft(
   std::cout << "\tCreando SceneSoftObject...";
 
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
-  object->UpdateSoftBody(worldInfo , btTransform(btMatrix3x3::getIdentity(),btVector3(0,20,0)));
+  object->InitSoftBody(
+      worldInfo, btTransform(btMatrix3x3::getIdentity(), btVector3(0, 20, 0)));
   //   object->softBody->setCollisionShape(createConvexHullCollider(polyData).get());
   object->name = fileName;
   std::cout << "Terminado." << std::endl;

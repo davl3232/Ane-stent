@@ -11,7 +11,7 @@ include_directories(${BULLET_INCLUDE_DIRS})
 link_directories(${BULLET_LIBRARY_DIRS})
 
 ADD_EXECUTABLE(main 
-	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneRigidObject.cpp src/scene/SceneSoftObject.cpp src/scene/Scene.cpp src/scene/RigidMotionState.cpp src/util/ToString.cpp
+	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneRigidObject.cpp src/scene/SceneSoftObject.cpp src/scene/Scene.cpp src/scene/RigidMotionState.cpp src/util/ToString.cpp src/scene/InflatingCylinder.cpp
 )
 message(${BULLET_LIBRARIES})
 IF (APPLE)
@@ -26,4 +26,4 @@ IF (INTERNAL_ADD_POSTFIX_EXECUTABLE_NAMES)
 			SET_TARGET_PROPERTIES(main PROPERTIES  RELWITHDEBINFO_POSTFIX "_RelWithDebugInfo")
 ENDIF(INTERNAL_ADD_POSTFIX_EXECUTABLE_NAMES)
 
-add_subdirectory(test)
+# add_subdirectory(test)

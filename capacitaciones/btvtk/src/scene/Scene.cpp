@@ -42,6 +42,10 @@ class vtkTimerCallback : public vtkCommand {
         this->deltaTime = this->newTime - this->prevTime;
       }
 
+      if (this->deltaTime > std::chrono::duration<double>(1. / 60) * 4) {
+        this->deltaTime = std::chrono::duration<double>(1. / 60);
+      }
+
       double count = this->deltaTime.count();
       std::cout << "DT: " << count << std::endl;
 
@@ -106,6 +110,8 @@ void Scene::InitPhysics() {
   this->softBodyWorldInfo.m_gravity = this->dynamicsWorld->getGravity();
   this->softBodyWorldInfo.m_sparsesdf.Initialize();
 }
+
+void getCenterOfMass() {}
 void Scene::InitGraphics() {
   // Crear Renderer, RenderWindow y RenderWindowInteractor.
   vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -158,6 +164,12 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
+  for (size_t i = 0; i < this->rigidObjects.size(); i++) {
+    this->rigidObjects[i]->UpdatePhysics(deltaTime);
+  }
+  for (size_t i = 0; i < this->softObjects.size(); i++) {
+    this->softObjects[i]->UpdatePhysics(deltaTime);
+  }
   std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
   // Llamar actualización de física de cada objeto suave.
   for (size_t i = 0; i < this->softObjects.size(); i++) {

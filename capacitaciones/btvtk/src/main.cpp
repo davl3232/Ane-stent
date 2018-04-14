@@ -54,8 +54,16 @@ int main(int argc, char **argv) {
   scene->AddRigidObject(loadPlane());
   // Añadir modelos desde archivos en consola
   for (size_t i = 1; i < argc; i++) {
-    std::shared_ptr<SceneSoftObject> object =
+    std::shared_ptr<SceneSoftObject> object;
+    // if (i == 1) {
+    //   std::shared_ptr<InflatingCylinder> cylinder =
+    //       ModelLoader::LoadSoft(std::string(argv[i]),
+    //       scene->softBodyWorldInfo);
+    //   object = cylinder;
+    // } else {
+    object =
         ModelLoader::LoadSoft(std::string(argv[i]), scene->softBodyWorldInfo);
+    // }
     object->softBody->m_worldInfo = &(scene->softBodyWorldInfo);
     std::cout << object->softBody->getTotalMass() << std::endl;
     scene->AddSoftObject(object);
