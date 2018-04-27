@@ -18,7 +18,7 @@
 #include <memory>
 
 class vtkTimerCallback : public vtkCommand {
- public:
+public:
   std::shared_ptr<Scene> scene;
 
   static vtkTimerCallback *New() {
@@ -57,7 +57,7 @@ class vtkTimerCallback : public vtkCommand {
     }
   }
 
- private:
+private:
   int TimerCount;
   bool isFirstExecution;
   std::chrono::time_point<std::chrono::steady_clock> prevTime;
@@ -132,14 +132,14 @@ void Scene::InitGraphics() {
 
   renderer->AddActor(axes);
 
-  vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
-      vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();  // like
-                                                                  // paraview
+  // vtkSmartPointer<vtkInteractorStyleTrackballCamera> style =
+  //     vtkSmartPointer<vtkInteractorStyleTrackballCamera>::New();  // like
+  // paraview
 
   this->renderWindowInteractor =
       vtkSmartPointer<vtkRenderWindowInteractor>::New();
 
-  this->renderWindowInteractor->SetInteractorStyle(style);
+  // this->renderWindowInteractor->SetInteractorStyle(style);
 
   this->renderWindowInteractor->SetRenderWindow(renderWindow);
 }
@@ -165,10 +165,10 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
   for (size_t i = 0; i < this->rigidObjects.size(); i++) {
-    this->rigidObjects[i]->UpdatePhysics(deltaTime);
+    // this->rigidObjects[i]->UpdatePhysics(deltaTime);
   }
   for (size_t i = 0; i < this->softObjects.size(); i++) {
-    this->softObjects[i]->UpdatePhysics(deltaTime);
+    // this->softObjects[i]->UpdatePhysics(deltaTime);
   }
   std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
   // Llamar actualización de física de cada objeto suave.
