@@ -70,15 +70,14 @@ int main(int argc, char **argv) {
   }
 
   //   Añadir modelos desde archivos en consola
-  /*for (size_t i = 1; i < argc; i++) {
-    std::shared_ptr<SceneRigidObject> object =
-        ModelLoader::Load(std::string(argv[i]));
-    object->UpdateRigidBody(1);
-    object->rigidBody->setWorldTransform(
-        btTransform(btQuaternion::getIdentity(), btVector3(0, 10, 0)));
-    scene->AddRigidObject(object);
-  }
-*/
+  //   for (size_t i = 1; i < argc; i++) {
+  //     std::shared_ptr<SceneRigidObject> object =
+  //         ModelLoader::Load(std::string(argv[i]));
+  //     object->UpdateRigidBody(1);
+  //     object->rigidBody->setWorldTransform(
+  //         btTransform(btQuaternion::getIdentity(), btVector3(0, 10, 0)));
+  //     scene->AddRigidObject(object);
+  //   }
   scene->Loop();
   return EXIT_SUCCESS;
 }
