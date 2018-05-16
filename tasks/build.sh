@@ -1,3 +1,3 @@
 #!/bin/bash
-cmake ./ build/
+cmake ./ build/ -DCMAKE_BUILD_TYPE=Debug
 make -C build/

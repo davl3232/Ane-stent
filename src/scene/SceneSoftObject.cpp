@@ -60,8 +60,9 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
     verts[i][1] = pt[1];
     verts[i][2] = pt[2];
 
-    std::cout << "Vértice " << i << ": (" << p[0] << "," << p[1] << "," << p[2]
-              << ")" << std::endl;
+    // std::cout << "Vértice " << i << ": (" << p[0] << "," << p[1] << "," <<
+    // p[2]
+    //           << ")" << std::endl;
   }
 
   // Actualizar puntos de VTK.
@@ -71,9 +72,9 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
   size_t triInd = 0;
   // Recorrer polígonos de VTK.
   while (polys->GetNextCell(idList)) {
-    std::cout << std::endl;
-    std::cout << "Polígono con " << idList->GetNumberOfIds()
-              << " puntos:" << std::endl;
+    // std::cout << std::endl;
+    // std::cout << "Polígono con " << idList->GetNumberOfIds()
+    //           << " puntos:" << std::endl;
 
     // Recorrer vértices del polígono.
     for (vtkIdType pointId = 0; pointId < idList->GetNumberOfIds(); pointId++) {
@@ -85,8 +86,8 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
       tris[triInd][pointId] = id;
       polyData->GetPoint(id, p);
 
-      std::cout << "Vértice " << id << ": (" << p[0] << "," << p[1] << ","
-                << p[2] << ")" << std::endl;
+      // std::cout << "Vértice " << id << ": (" << p[0] << "," << p[1] << ","
+      //           << p[2] << ")" << std::endl;
     }
     triInd++;
   }
@@ -96,14 +97,14 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
       std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
           worldInfo, &verts[0][0], &tris[0][0], numTris, true));
 
-  std::cout << "softBody: " << this->softBody->getTotalMass() << std::endl;
+  // std::cout << "softBody: " << this->softBody->getTotalMass() << std::endl;
   // btScalar m_kLST; // Linear stiffness coefficient [0,1]
   // btScalar m_kAST; // Area/Angular stiffness coefficient [0,1]
   // btScalar m_kVST; // Volume stiffness coefficient [0,1]
   btSoftBody::Material *pm = this->softBody->appendMaterial();
-  pm->m_kLST = 1;
-  pm->m_kAST = 1;
-  pm->m_kVST = 0.01;
+  pm->m_kLST = 0.1;
+  pm->m_kAST = 0.2;
+  pm->m_kVST = 1;
 
   // btSoftBody::Config::kVCF; // Velocities correction factor (Baumgarte)
   // define the amount of correction per time step for drift solver (sometimes
@@ -149,13 +150,18 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
   // correction, 1 mean full correction.
 
   // btSoftBody::Config::maxvolume; // Maximum volume ratio for pose
-  this->softBody->generateBendingConstraints(4, pm);
-  this->softBody->m_cfg.piterations = 5;
-  this->softBody->m_cfg.kDF = 0.5;
-  this->softBody->m_cfg.kMT = 0.05;
+  // this->softBody->m_cfg.piterations = 5;
+  // this->softBody->m_cfg.kDF = 0;
+  // this->softBody->m_cfg.kMT = 0;
+  // this->softBody->m_cfg.kVC = 0;
+  // this->softBody->m_cfg.collisions |= btSoftBody::fCollision::CL_SELF;
   this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
+  this->softBody->m_cfg.kDF = 1;
+  this->softBody->m_cfg.kDP = 0.001; // fun factor...
+  this->softBody->generateBendingConstraints(2, pm);
+  // this->softBody->m_cfg.kMT = 0;
   this->softBody->randomizeConstraints();
-  this->softBody->setTotalMass(10, true);
+  this->softBody->setTotalMass(100, true);
   this->UpdateMesh();
 }
 
@@ -197,22 +203,4 @@ btVector3 SceneSoftObject::getCenterOfGeometry() {
   return centerOfGeometry / double(this->softBody->m_nodes.size());
 }
 
-void SceneSoftObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {
-  // btVector3 centerOfGeometry = this->getCenterOfGeometry();
-  // for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
-  //   btSoftBody::Node node = this->softBody->m_nodes[i];
-  //   btVector3 pos = node.m_x;
-  //   btVector3 normal = pos - centerOfGeometry;
-  //   btVector3 force = normal * 1000;
-  //   this->softBody->addForce(force, i);
-  //   // btVector3 force = node.m_n * 100;
-  //   // btVector3 pos = node.m_x + force * deltaTime.count();
-  //   if (i == 0) {
-  //     std::cout << "Punto " << i << ": " << ToString::btVector3(pos)
-  //               << std::endl;
-  //     std::cout << "Fuerza: " << ToString::btVector3(force) << std::endl;
-  //   }
-  // }
-  // // this->softBody->updatePose();
-  // this->softBody->applyForces();
-}
+void SceneSoftObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {}

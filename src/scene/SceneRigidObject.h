@@ -16,7 +16,7 @@
  * Bullet y renderizarlo con VTK.
  */
 class SceneRigidObject : public std::enable_shared_from_this<SceneRigidObject> {
- public:
+public:
   std::string name;
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btCollisionShape> collider;

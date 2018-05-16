@@ -4,10 +4,10 @@
 #include "SceneSoftObject.h"
 
 class InflatingCylinder : SceneSoftObject {
- public:
+public:
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime) override;
 
- private:
+private:
 };
 
-#endif  // !INFLATING_CYLINDER_H
+#endif // !INFLATING_CYLINDER_H

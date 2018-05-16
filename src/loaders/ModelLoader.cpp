@@ -21,8 +21,8 @@
 #include <vtkUnstructuredGrid.h>
 #include <vtkXMLGenericDataObjectReader.h>
 
-std::shared_ptr<btCollisionShape> createConvexHullCollider(
-    std::vector<std::vector<double>> vertices) {
+std::shared_ptr<btCollisionShape>
+createConvexHullCollider(std::vector<std::vector<double>> vertices) {
   // Meter puntos en colisionador
   std::shared_ptr<btConvexHullShape> convexHullShape(new btConvexHullShape());
   for (int i = 0; i < vertices.size(); i++) {
@@ -34,8 +34,8 @@ std::shared_ptr<btCollisionShape> createConvexHullCollider(
 
   return convexHullShape;
 }
-std::shared_ptr<btCollisionShape> createConvexHullCollider(
-    vtkSmartPointer<vtkPolyData> polyData) {
+std::shared_ptr<btCollisionShape>
+createConvexHullCollider(vtkSmartPointer<vtkPolyData> polyData) {
   std::vector<std::vector<double>> vertices;
 
   // Extraer puntos del PolyData
@@ -74,8 +74,8 @@ std::shared_ptr<SceneRigidObject> ModelLoader::Load(std::string fileName) {
   return NULL;
 }
 
-std::shared_ptr<SceneRigidObject> ModelLoader::Load(
-    std::vector<std::vector<double>> vertices, std::string name) {
+std::shared_ptr<SceneRigidObject>
+ModelLoader::Load(std::vector<std::vector<double>> vertices, std::string name) {
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
   for (size_t i = 0; i < vertices.size(); i++) {
     points->InsertNextPoint(0, 0, 0);
@@ -145,21 +145,23 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
     std::cout << "\tEl archivo es un PolyData." << std::endl;
     polyData = reader->GetPolyDataOutput();
     std::cout << polyData->GetNumberOfPoints() << std::endl;
-  } else {
-    vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
-        vtkSmartPointer<vtkUnstructuredGrid>::New();
-    vtkSmartPointer<vtkGeometryFilter> geometryFilter =
-        vtkSmartPointer<vtkGeometryFilter>::New();
-
-    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
-        vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
-    geometryFilter->SetInputData(unstructuredGrid);
-    geometryFilter->Update();
-    surfaceFilter->SetInputData(unstructuredGrid);
-    surfaceFilter->Update();
-    polyData = surfaceFilter->GetOutput();
-    std::cout << polyData->GetNumberOfPoints() << std::endl;
   }
+  // Para usar con vtkUnstructuredGrid (funcionalidad no probada):
+  //   else {
+  //     vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
+  //         vtkSmartPointer<vtkUnstructuredGrid>::New();
+  //     vtkSmartPointer<vtkGeometryFilter> geometryFilter =
+  //         vtkSmartPointer<vtkGeometryFilter>::New();
+
+  //     vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+  //         vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+  //     geometryFilter->SetInputData(unstructuredGrid);
+  //     geometryFilter->Update();
+  //     surfaceFilter->SetInputData(unstructuredGrid);
+  //     surfaceFilter->Update();
+  //     polyData = surfaceFilter->GetOutput();
+  //     std::cout << polyData->GetNumberOfPoints() << std::endl;
+  //   }
   polyData = reader->GetPolyDataOutput();
   std::cout << polyData->GetNumberOfPoints() << std::endl;
 
@@ -210,21 +212,23 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
     std::cout << "\tEl archivo es un PolyData." << std::endl;
     polyData = reader->GetPolyDataOutput();
     std::cout << polyData->GetNumberOfPoints() << std::endl;
-  } else {
-    vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
-        vtkSmartPointer<vtkUnstructuredGrid>::New();
-    vtkSmartPointer<vtkGeometryFilter> geometryFilter =
-        vtkSmartPointer<vtkGeometryFilter>::New();
-
-    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
-        vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
-    geometryFilter->SetInputData(unstructuredGrid);
-    geometryFilter->Update();
-    surfaceFilter->SetInputData(unstructuredGrid);
-    surfaceFilter->Update();
-    polyData = surfaceFilter->GetOutput();
-    std::cout << polyData->GetNumberOfPoints() << std::endl;
   }
+  // Para usar con vtkUnstructuredGrid (funcionalidad no probada):
+  //   else {
+  //     vtkSmartPointer<vtkUnstructuredGrid> unstructuredGrid =
+  //         vtkSmartPointer<vtkUnstructuredGrid>::New();
+  //     vtkSmartPointer<vtkGeometryFilter> geometryFilter =
+  //         vtkSmartPointer<vtkGeometryFilter>::New();
+
+  //     vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+  //         vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+  //     geometryFilter->SetInputData(unstructuredGrid);
+  //     geometryFilter->Update();
+  //     surfaceFilter->SetInputData(unstructuredGrid);
+  //     surfaceFilter->Update();
+  //     polyData = surfaceFilter->GetOutput();
+  //     std::cout << polyData->GetNumberOfPoints() << std::endl;
+  //   }
 
   // Crear actor
   std::cout << "\tCreando actor...";
@@ -256,8 +260,9 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
   return object;
 }
 
-std::shared_ptr<SceneSoftObject> ModelLoader::LoadSoft(
-    std::string fileName, btSoftBodyWorldInfo worldInfo) {
+std::shared_ptr<SceneSoftObject>
+ModelLoader::LoadSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
+                      btTransform transform) {
   // Abrir archivo
   std::ifstream myReadFile;
   myReadFile.open(fileName);
@@ -269,16 +274,17 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadSoft(
 
     // Si el primer caracter del archivo es un '<'...
     if (firstFileChar == '<') {
-      return ModelLoader::LoadXMLSoft(fileName, worldInfo);
+      return ModelLoader::LoadXMLSoft(fileName, worldInfo, transform);
     } else {
-      return ModelLoader::LoadTXTSoft(fileName, worldInfo);
+      return ModelLoader::LoadTXTSoft(fileName, worldInfo, transform);
     }
   }
   return NULL;
 }
 
-std::shared_ptr<SceneSoftObject> ModelLoader::LoadXMLSoft(
-    std::string fileName, btSoftBodyWorldInfo worldInfo) {
+std::shared_ptr<SceneSoftObject>
+ModelLoader::LoadXMLSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
+                         btTransform transform) {
   // Leer como XML
   std::cout << "Cargando XML..." << std::endl;
 
@@ -326,8 +332,7 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadXMLSoft(
   std::cout << "\tCreando SceneSoftObject...";
 
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
-  object->InitSoftBody(
-      worldInfo, btTransform(btMatrix3x3::getIdentity(), btVector3(0, 20, 0)));
+  object->InitSoftBody(worldInfo, transform);
   //   object->softBody->setCollisionShape(createConvexHullCollider(polyData).get());
   object->name = fileName;
 
@@ -336,8 +341,9 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadXMLSoft(
   return object;
 }
 
-std::shared_ptr<SceneSoftObject> ModelLoader::LoadTXTSoft(
-    std::string fileName, btSoftBodyWorldInfo worldInfo) {
+std::shared_ptr<SceneSoftObject>
+ModelLoader::LoadTXTSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
+                         btTransform transform) {
   // Leer como TXT
   std::cout << "Cargando TXT..." << std::endl;
   vtkSmartPointer<vtkGenericDataObjectReader> reader =
@@ -382,8 +388,7 @@ std::shared_ptr<SceneSoftObject> ModelLoader::LoadTXTSoft(
   std::cout << "\tCreando SceneSoftObject...";
 
   std::shared_ptr<SceneSoftObject> object(new SceneSoftObject(actor));
-  object->InitSoftBody(
-      worldInfo, btTransform(btMatrix3x3::getIdentity(), btVector3(0, 20, 0)));
+  object->InitSoftBody(worldInfo, transform);
   //   object->softBody->setCollisionShape(createConvexHullCollider(polyData).get());
   object->name = fileName;
   std::cout << "Terminado." << std::endl;

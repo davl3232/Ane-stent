@@ -15,7 +15,7 @@
 #include <vtkSmartPointer.h>
 
 class SceneSoftObject {
- public:
+public:
   std::string name;
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btSoftBody> softBody;
@@ -30,4 +30,4 @@ class SceneSoftObject {
   btVector3 getCenterOfGeometry();
 };
 
-#endif  // !SCENE_SOFT_OBJECT_H
+#endif // !SCENE_SOFT_OBJECT_H

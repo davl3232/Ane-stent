@@ -108,7 +108,7 @@ void Scene::InitPhysics() {
           dispatcher, broadphase, solver, collisionConfiguration));
 
   // Se aplica gravedad sobre el eje y.
-  this->dynamicsWorld->setGravity(btVector3(0, -10.0, 0));
+  this->dynamicsWorld->setGravity(btVector3(0, 0, 0));
 
   // Configuración para la simulación de cuerpos suaves.
   this->softBodyWorldInfo.m_broadphase = broadphase;
@@ -170,13 +170,13 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
-  this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
   for (size_t i = 0; i < this->rigidObjects.size(); i++) {
     this->rigidObjects[i]->UpdatePhysics(deltaTime);
   }
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdatePhysics(deltaTime);
   }
+  this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
   // std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
   // Llamar actualización de física de cada objeto suave.
   for (size_t i = 0; i < this->softObjects.size(); i++) {
