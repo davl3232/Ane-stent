@@ -20,10 +20,12 @@ public:
   vtkSmartPointer<vtkActor> actor;
   std::shared_ptr<btSoftBody> softBody;
 
+  SceneSoftObject();
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
-  void InitSoftBody(btSoftBodyWorldInfo &worldInfo,
-                    btTransform transform = btTransform::getIdentity());
+  void InitSoftBody(
+      btSoftBodyWorldInfo &worldInfo,
+      vtkSmartPointer<vtkTransform> = vtkSmartPointer<vtkTransform>::New());
   void UpdateMesh();
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
 

@@ -15,12 +15,13 @@
 #include "../util/ToString.h"
 #include "RigidMotionState.h"
 
+SceneSoftObject::SceneSoftObject() {}
 SceneSoftObject::SceneSoftObject(vtkSmartPointer<vtkActor> actor) {
   this->actor = actor;
 }
 SceneSoftObject::~SceneSoftObject() {}
 void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
-                                   btTransform transform) {
+                                   vtkSmartPointer<vtkTransform> transform) {
   vtkSmartPointer<vtkPolyData> polyData =
       vtkPolyData::SafeDownCast(this->actor->GetMapper()->GetInputAsDataSet());
 
@@ -42,18 +43,15 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
   vtkSmartPointer<vtkPoints> oldpts = polyData->GetPoints();
   for (vtkIdType i = 0; i < numVerts; i++) {
     // Obtener vértice.
-    double p[3];
-    oldpts->GetPoint(i, p);
+    double pk[4];
+    oldpts->GetPoint(i, pk);
+    pk[3] = 0;
+    double p[4];
+    transform->TransformPoint(pk, p);
+    newpts->InsertNextPoint(p);
 
     // Transformar vértice.
     btVector3 pt(p[0], p[1], p[2]);
-    pt = transform * pt;
-
-    // Insertar vértice transformado en arreglo para VTK.
-    p[0] = pt[0];
-    p[1] = pt[1];
-    p[2] = pt[2];
-    newpts->InsertNextPoint(p);
 
     // Insertar vértice transformado en arreglo para Bullet.
     verts[i][0] = pt[0];
@@ -96,73 +94,6 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
   this->softBody =
       std::shared_ptr<btSoftBody>(btSoftBodyHelpers::CreateFromTriMesh(
           worldInfo, &verts[0][0], &tris[0][0], numTris, true));
-
-  // std::cout << "softBody: " << this->softBody->getTotalMass() << std::endl;
-  // btScalar m_kLST; // Linear stiffness coefficient [0,1]
-  // btScalar m_kAST; // Area/Angular stiffness coefficient [0,1]
-  // btScalar m_kVST; // Volume stiffness coefficient [0,1]
-  btSoftBody::Material *pm = this->softBody->appendMaterial();
-  pm->m_kLST = 0.1;
-  pm->m_kAST = 0.2;
-  pm->m_kVST = 1;
-
-  // btSoftBody::Config::kVCF; // Velocities correction factor (Baumgarte)
-  // define the amount of correction per time step for drift solver (sometimes
-  // referred as ERP in rigid bodies solvers).
-
-  // btSoftBody::Config::kDP; // Damping coefficient [0,1]
-  // damping, zero = no damping, one= full damping.
-
-  // btSoftBody::Config::kDG; // Drag coefficient [0,+inf]
-  // [aerodynamic] kDG=0 mean no drag.
-
-  // btSoftBody::Config::kLF; // Lift coefficient [0,+inf]
-  // [aerodynamic]=> is a factor of the lift force kLF=0 mean no lift
-
-  // btSoftBody::Config::kPR; // Pressure coefficient [-inf,+inf]
-  // [aerodynamic]=> is a factor of pressure.
-
-  // btSoftBody::Config::kVC; // Volume conversation coefficient [0,+inf]
-  // when 'setPose(true,...)' as been called, define the magnitude of the force
-  // used to conserve volume.
-
-  // btSoftBody::Config::kDF; // Dynamic friction coefficient [0,1]
-  // friction, kDF=0 mean sliding, kDF=1 mean sticking.
-
-  // btSoftBody::Config::kMT; // Pose matching coefficient [0,1]
-  // when 'setPose(...,true)' as been called, define the factor used for pose
-  // matching.
-
-  // btSoftBody::Config::kCHR; // Rigid contacts hardness [0,1]
-  // define how 'soft' contact with rigid bodies are, kCHR=0 mean no penetration
-  // correction, 1 mean full correction.
-
-  // btSoftBody::Config::kKHR; // Kinetic contacts hardness [0,1]
-  // define how 'soft' contact with kinetic/static bodies are, kKHR=0 mean no
-  // penetration correction, 1 mean full correction.
-
-  // btSoftBody::Config::kSHR; // Soft contacts hardness [0,1]
-  // define how 'soft' contact with other soft bodies are, kSHR=0 mean no
-  // penetration correction, 1 mean full correction.
-
-  // btSoftBody::Config::kAHR; // Anchors hardness [0,1]
-  // define how 'soft' anchor constraint (joint) are, kAHR=0 mean no drift
-  // correction, 1 mean full correction.
-
-  // btSoftBody::Config::maxvolume; // Maximum volume ratio for pose
-  // this->softBody->m_cfg.piterations = 5;
-  // this->softBody->m_cfg.kDF = 0;
-  // this->softBody->m_cfg.kMT = 0;
-  // this->softBody->m_cfg.kVC = 0;
-  // this->softBody->m_cfg.collisions |= btSoftBody::fCollision::CL_SELF;
-  this->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
-  this->softBody->m_cfg.kDF = 1;
-  this->softBody->m_cfg.kDP = 0.001; // fun factor...
-  this->softBody->generateBendingConstraints(2, pm);
-  // this->softBody->m_cfg.kMT = 0;
-  this->softBody->randomizeConstraints();
-  this->softBody->setTotalMass(100, true);
-  this->UpdateMesh();
 }
 
 void SceneSoftObject::UpdateMesh() {

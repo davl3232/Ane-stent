@@ -108,7 +108,7 @@ void Scene::InitPhysics() {
           dispatcher, broadphase, solver, collisionConfiguration));
 
   // Se aplica gravedad sobre el eje y.
-  this->dynamicsWorld->setGravity(btVector3(0, 0, 0));
+  this->dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
   // Configuración para la simulación de cuerpos suaves.
   this->softBodyWorldInfo.m_broadphase = broadphase;
@@ -257,21 +257,16 @@ GetNormalsProp(std::shared_ptr<btSoftBody> softBody) {
   return assembly;
 }
 void Scene::DebugNormals() {
-  // for (size_t i = 0; i < this->rigidObjects.size(); i++) {
-  //   this->rigidObjects[i];
-  // }
-  for (size_t i = 0; i < this->softObjects.size(); i++) {
-    std::cout << "NORMALS" << std::endl;
-    this->renderWindowInteractor->GetRenderWindow()
-        ->GetRenderers()
-        ->GetFirstRenderer()
-        ->RemoveActor(this->normals);
-    this->normals = GetNormalsProp(this->softObjects[i]->softBody);
-    this->renderWindowInteractor->GetRenderWindow()
-        ->GetRenderers()
-        ->GetFirstRenderer()
-        ->AddActor(this->normals);
-  }
+  std::cout << "NORMALS" << std::endl;
+  this->renderWindowInteractor->GetRenderWindow()
+      ->GetRenderers()
+      ->GetFirstRenderer()
+      ->RemoveActor(this->normals);
+  this->normals = GetNormalsProp(this->softObjects[0]->softBody);
+  this->renderWindowInteractor->GetRenderWindow()
+      ->GetRenderers()
+      ->GetFirstRenderer()
+      ->AddActor(this->normals);
 }
 void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
   this->rigidObjects.push_back(object);

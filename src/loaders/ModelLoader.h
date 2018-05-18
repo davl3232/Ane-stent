@@ -13,16 +13,14 @@ public:
   static std::shared_ptr<SceneRigidObject> LoadTXT(std::string fileName);
   static std::shared_ptr<SceneRigidObject> LoadXML(std::string fileName);
   static std::shared_ptr<SceneRigidObject> Load(std::string fileName);
-  static std::shared_ptr<SceneRigidObject>
-  Load(std::vector<std::vector<double>> puntos, std::string name = "strip");
   static std::shared_ptr<SceneSoftObject>
   LoadSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-           btTransform transform);
+           vtkSmartPointer<vtkTransform> transform);
   static std::shared_ptr<SceneSoftObject>
   LoadXMLSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-              btTransform transform);
+              vtkSmartPointer<vtkTransform> transform);
   static std::shared_ptr<SceneSoftObject>
   LoadTXTSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-              btTransform transform);
+              vtkSmartPointer<vtkTransform> transform);
 };
 #endif

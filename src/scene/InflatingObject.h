@@ -1,13 +1,14 @@
-#ifndef INFLATING_CYLINDER_H
-#define INFLATING_CYLINDER_H
+#ifndef INFLATING_OBJECT_H
+#define INFLATING_OBJECT_H
 
 #include "SceneSoftObject.h"
 
-class InflatingCylinder : SceneSoftObject {
+class InflatingObject : public SceneSoftObject {
 public:
+  double dPR = 0.0;
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime) override;
 
 private:
 };
 
-#endif // !INFLATING_CYLINDER_H
+#endif

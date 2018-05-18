@@ -74,61 +74,6 @@ std::shared_ptr<SceneRigidObject> ModelLoader::Load(std::string fileName) {
   return NULL;
 }
 
-std::shared_ptr<SceneRigidObject>
-ModelLoader::Load(std::vector<std::vector<double>> vertices, std::string name) {
-  vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
-  for (size_t i = 0; i < vertices.size(); i++) {
-    points->InsertNextPoint(0, 0, 0);
-  }
-
-  vtkSmartPointer<vtkTriangleStrip> triangleStrip =
-      vtkSmartPointer<vtkTriangleStrip>::New();
-  triangleStrip->GetPointIds()->SetNumberOfIds(4);
-  triangleStrip->GetPointIds()->SetId(0, 0);
-  triangleStrip->GetPointIds()->SetId(1, 1);
-  triangleStrip->GetPointIds()->SetId(2, 2);
-  triangleStrip->GetPointIds()->SetId(3, 3);
-
-  vtkSmartPointer<vtkCellArray> cells = vtkSmartPointer<vtkCellArray>::New();
-  cells->InsertNextCell(triangleStrip);
-
-  vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-  polyData->SetPoints(points);
-  polyData->SetStrips(cells);
-
-  std::cout << polyData->GetNumberOfPoints() << std::endl;
-
-  // Crear actor
-  std::cout << "\tCreando actor...";
-
-  vtkSmartPointer<vtkDataSetMapper> mapper =
-      vtkSmartPointer<vtkDataSetMapper>::New();
-  mapper->SetInputData(polyData);
-  vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-  actor->SetMapper(mapper);
-  std::cout << "Terminado." << std::endl;
-
-  // Crear colisionador
-  std::cout << "\tCreando colisionador...";
-
-  std::shared_ptr<btCollisionShape> convexHullShape(
-      createConvexHullCollider(polyData));
-
-  std::cout << "Terminado." << std::endl;
-
-  // Crear SceneRigidObject
-  std::cout << "\tCreando SceneRigidObject...";
-
-  std::shared_ptr<SceneRigidObject> object(
-      new SceneRigidObject(actor, convexHullShape));
-  object->UpdateRigidBody(1);
-  object->name = name;
-
-  std::cout << "Terminado." << std::endl;
-
-  return object;
-}
-
 std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
   // Leer como XML
   std::cout << "Cargando XML..." << std::endl;
@@ -262,7 +207,7 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
 
 std::shared_ptr<SceneSoftObject>
 ModelLoader::LoadSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-                      btTransform transform) {
+                      vtkSmartPointer<vtkTransform> transform) {
   // Abrir archivo
   std::ifstream myReadFile;
   myReadFile.open(fileName);
@@ -284,7 +229,7 @@ ModelLoader::LoadSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
 
 std::shared_ptr<SceneSoftObject>
 ModelLoader::LoadXMLSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-                         btTransform transform) {
+                         vtkSmartPointer<vtkTransform> transform) {
   // Leer como XML
   std::cout << "Cargando XML..." << std::endl;
 
@@ -343,7 +288,7 @@ ModelLoader::LoadXMLSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
 
 std::shared_ptr<SceneSoftObject>
 ModelLoader::LoadTXTSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-                         btTransform transform) {
+                         vtkSmartPointer<vtkTransform> transform) {
   // Leer como TXT
   std::cout << "Cargando TXT..." << std::endl;
   vtkSmartPointer<vtkGenericDataObjectReader> reader =

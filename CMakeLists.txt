@@ -11,7 +11,7 @@ include_directories(${BULLET_INCLUDE_DIRS})
 link_directories(${BULLET_LIBRARY_DIRS})
 
 ADD_EXECUTABLE(main 
-	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneRigidObject.cpp src/scene/SceneSoftObject.cpp src/scene/Scene.cpp src/scene/RigidMotionState.cpp src/util/ToString.cpp src/scene/InflatingCylinder.cpp
+	src/main.cpp src/loaders/ModelLoader.cpp src/scene/SceneRigidObject.cpp src/scene/SceneSoftObject.cpp src/scene/InflatingObject.cpp src/scene/Scene.cpp src/scene/RigidMotionState.cpp src/util/ToString.cpp
 )
 message(${BULLET_LIBRARIES})
 IF (APPLE)

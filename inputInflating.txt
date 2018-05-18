@@ -1,0 +1,2 @@
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/cilindroRadio.vtk 2 2 2 90 0 0 0 5 0 0.1 0.1 0.1 100
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 0 5 0 0.1 0.1 0.1 100 10000
