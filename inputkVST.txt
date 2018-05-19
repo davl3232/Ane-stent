@@ -1,6 +1,6 @@
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 -5 5 0 0.1 0.1 0 100
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 -3 5 0 0.1 0.1 0.2 100
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 -1 5 0 0.1 0.1 0.4 100
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 1 5 0 0.1 0.1 0.6 100
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 3 5 0 0.1 0.1 0.8 100
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 1 1 1 0 0 0 5 5 0 0.1 0.1 1 100
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 3 3 3 0 0 0 -15 5 1 1 0 10
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 3 3 3 0 0 0 -9 5 0 1 1 0.2 10
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 3 3 3 0 0 0 -3 5 0 1 1 0.4 10
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 3 3 3 0 0 0 3 5 0 1 1 0.6 10
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 3 3 3 0 0 0 9 5 0 1 1 0.8 10
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk 3 3 3 0 0 0 15 5 0 1 1 1 10
