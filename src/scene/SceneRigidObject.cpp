@@ -2,16 +2,19 @@
 
 #include <memory>
 
+#include <vtkMapper.h>
+#include <vtkPolyData.h>
 #include <vtkProperty.h>
 #include <vtkTransform.h>
 
 #include "RigidMotionState.h"
 
-void SceneRigidObject::UpdateRigidBody(btScalar mass) {
+void SceneRigidObject::InitRigidBody(btScalar mass,
+                                     vtkSmartPointer<vtkTransform> transform) {
   btVector3 inertia(0, 0, 0);
   this->collider->calculateLocalInertia(mass, inertia);
-  this->motionState = std::shared_ptr<btMotionState>(
-      new RigidMotionState(shared_from_this(), btTransform::getIdentity()));
+  this->motionState =
+      std::shared_ptr<btMotionState>(new RigidMotionState(shared_from_this()));
   // this->motionState = std::shared_ptr<btMotionState>(
   //     new btDefaultMotionState(btTransform::getIdentity()));
   btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(
@@ -35,7 +38,19 @@ SceneRigidObject::SceneRigidObject(vtkSmartPointer<vtkActor> actor,
 
 SceneRigidObject::~SceneRigidObject() {}
 
-void SceneRigidObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {
-  btTransform btTrans;
-  this->rigidBody->getMotionState()->getWorldTransform(btTrans);
+void SceneRigidObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {}
+
+btVector3 SceneRigidObject::GetCenterOfGeometry() {
+  btVector3 centerOfGeometry(0, 0, 0);
+  vtkSmartPointer<vtkPolyData> polyData =
+      vtkPolyData::SafeDownCast(this->actor->GetMapper()->GetInputAsDataSet());
+  vtkIdType numVerts = polyData->GetNumberOfPoints();
+  vtkSmartPointer<vtkPoints> oldpts = polyData->GetPoints();
+  for (vtkIdType i = 0; i < numVerts; i++) {
+    double pk[3];
+    oldpts->GetPoint(i, pk);
+    btVector3 p(pk[0], pk[1], pk[2]);
+    centerOfGeometry += p;
+  }
+  return centerOfGeometry / double(numVerts);
 }

@@ -10,17 +10,29 @@
 
 class ModelLoader {
 public:
-  static std::shared_ptr<SceneRigidObject> LoadTXT(std::string fileName);
-  static std::shared_ptr<SceneRigidObject> LoadXML(std::string fileName);
-  static std::shared_ptr<SceneRigidObject> Load(std::string fileName);
+  static std::shared_ptr<SceneRigidObject>
+  LoadTXT(std::string fileName, btScalar mass = 1,
+          vtkSmartPointer<vtkTransform> transform =
+              vtkSmartPointer<vtkTransform>::New());
+  static std::shared_ptr<SceneRigidObject>
+  LoadXML(std::string fileName, btScalar mass = 1,
+          vtkSmartPointer<vtkTransform> transform =
+              vtkSmartPointer<vtkTransform>::New());
+  static std::shared_ptr<SceneRigidObject>
+  Load(std::string fileName, btScalar mass = 1,
+       vtkSmartPointer<vtkTransform> transform =
+           vtkSmartPointer<vtkTransform>::New());
   static std::shared_ptr<SceneSoftObject>
   LoadSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-           vtkSmartPointer<vtkTransform> transform);
+           vtkSmartPointer<vtkTransform> transform =
+               vtkSmartPointer<vtkTransform>::New());
   static std::shared_ptr<SceneSoftObject>
   LoadXMLSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-              vtkSmartPointer<vtkTransform> transform);
+              vtkSmartPointer<vtkTransform> transform =
+                  vtkSmartPointer<vtkTransform>::New());
   static std::shared_ptr<SceneSoftObject>
   LoadTXTSoft(std::string fileName, btSoftBodyWorldInfo worldInfo,
-              vtkSmartPointer<vtkTransform> transform);
+              vtkSmartPointer<vtkTransform> transform =
+                  vtkSmartPointer<vtkTransform>::New());
 };
 #endif

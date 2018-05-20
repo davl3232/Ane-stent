@@ -10,6 +10,7 @@
 
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
 /**
  * @brief Contiene la información necesaria para simular la física de un objeto
@@ -30,7 +31,10 @@ public:
                    std::shared_ptr<btRigidBody> rigidBody);
 
   ~SceneRigidObject();
-  void UpdateRigidBody(btScalar mass = 0);
+  void InitRigidBody(btScalar mass = 1,
+                     vtkSmartPointer<vtkTransform> transform =
+                         vtkSmartPointer<vtkTransform>::New());
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
+  btVector3 GetCenterOfGeometry();
 };
 #endif

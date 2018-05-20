@@ -22,7 +22,30 @@
 #include <vtkXMLGenericDataObjectReader.h>
 
 std::shared_ptr<btCollisionShape>
-createConvexHullCollider(std::vector<std::vector<double>> vertices) {
+createConvexHullCollider(vtkSmartPointer<vtkPolyData> polyData,
+                         vtkSmartPointer<vtkTransform> transform) {
+  std::vector<std::vector<double>> vertices;
+  // Vértices transformados para VTK.
+  vtkSmartPointer<vtkPoints> newpts = vtkSmartPointer<vtkPoints>::New();
+
+  // Extraer puntos del PolyData
+  for (vtkIdType i = 0; i < polyData->GetNumberOfPoints(); i++) {
+    double pk[3];
+    polyData->GetPoint(i, pk);
+    double p[3];
+    transform->TransformPoint(pk, p);
+    newpts->InsertNextPoint(p);
+    std::vector<double> np(3, 0);
+    np[0] = p[0];
+    np[1] = p[1];
+    np[2] = p[2];
+
+    vertices.push_back(np);
+  }
+  // Actualizar puntos de VTK.
+  newpts->Modified();
+  polyData->SetPoints(newpts);
+
   // Meter puntos en colisionador
   std::shared_ptr<btConvexHullShape> convexHullShape(new btConvexHullShape());
   for (int i = 0; i < vertices.size(); i++) {
@@ -34,27 +57,10 @@ createConvexHullCollider(std::vector<std::vector<double>> vertices) {
 
   return convexHullShape;
 }
-std::shared_ptr<btCollisionShape>
-createConvexHullCollider(vtkSmartPointer<vtkPolyData> polyData) {
-  std::vector<std::vector<double>> vertices;
 
-  // Extraer puntos del PolyData
-  for (vtkIdType i = 0; i < polyData->GetNumberOfPoints(); i++) {
-    double p[3];
-    polyData->GetPoint(i, p);
-
-    std::vector<double> np(3, 0);
-    np[0] = p[0];
-    np[1] = p[1];
-    np[2] = p[2];
-
-    vertices.push_back(np);
-  }
-
-  return createConvexHullCollider(vertices);
-}
-
-std::shared_ptr<SceneRigidObject> ModelLoader::Load(std::string fileName) {
+std::shared_ptr<SceneRigidObject>
+ModelLoader::Load(std::string fileName, btScalar mass,
+                  vtkSmartPointer<vtkTransform> transform) {
   // Abrir archivo
   std::ifstream myReadFile;
   myReadFile.open(fileName);
@@ -66,15 +72,17 @@ std::shared_ptr<SceneRigidObject> ModelLoader::Load(std::string fileName) {
 
     // Si el primer caracter del archivo es un '<'...
     if (firstFileChar == '<') {
-      return ModelLoader::LoadXML(fileName);
+      return ModelLoader::LoadXML(fileName, mass, transform);
     } else {
-      return ModelLoader::LoadTXT(fileName);
+      return ModelLoader::LoadTXT(fileName, mass, transform);
     }
   }
   return NULL;
 }
 
-std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
+std::shared_ptr<SceneRigidObject>
+ModelLoader::LoadXML(std::string fileName, btScalar mass,
+                     vtkSmartPointer<vtkTransform> transform) {
   // Leer como XML
   std::cout << "Cargando XML..." << std::endl;
 
@@ -125,7 +133,7 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
   std::cout << "\tCreando colisionador...";
 
   std::shared_ptr<btCollisionShape> convexHullShape(
-      createConvexHullCollider(polyData));
+      createConvexHullCollider(polyData, transform));
 
   std::cout << "Terminado." << std::endl;
 
@@ -134,15 +142,16 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadXML(std::string fileName) {
 
   std::shared_ptr<SceneRigidObject> object(
       new SceneRigidObject(actor, convexHullShape));
-  object->UpdateRigidBody(1);
+  object->InitRigidBody(mass);
   object->name = fileName;
-
   std::cout << "Terminado." << std::endl;
 
   return object;
 }
 
-std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
+std::shared_ptr<SceneRigidObject>
+ModelLoader::LoadTXT(std::string fileName, btScalar mass,
+                     vtkSmartPointer<vtkTransform> transform) {
   // Leer como TXT
   std::cout << "Cargando TXT..." << std::endl;
   vtkSmartPointer<vtkGenericDataObjectReader> reader =
@@ -189,16 +198,16 @@ std::shared_ptr<SceneRigidObject> ModelLoader::LoadTXT(std::string fileName) {
   std::cout << "\tCreando colisionador...";
 
   std::shared_ptr<btCollisionShape> convexHullShape(
-      createConvexHullCollider(polyData));
+      createConvexHullCollider(polyData, transform));
 
   std::cout << "Terminado." << std::endl;
 
-  // Crear SceneRigidObjects
+  // Crear SceneRigidObject
   std::cout << "\tCreando SceneRigidObject...";
 
   std::shared_ptr<SceneRigidObject> object(
       new SceneRigidObject(actor, convexHullShape));
-  object->UpdateRigidBody(1);
+  object->InitRigidBody(mass);
   object->name = fileName;
   std::cout << "Terminado." << std::endl;
 

@@ -1,6 +1,6 @@
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	3	3	3	0	0	0	-15	5	0	1	1	1	10
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	3	3	3	0	0	0	-9	5	0	0.2	1	1	10
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	3	3	3	0	0	0	-3	5	0	0.4	1	1	10
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	3	3	3	0	0	0	3	5	0	0.6	1	1	10
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	3	3	3	0	0	0	9	5	0	0.8	1	1	10
-/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	3	3	3	0	0	0	15	5	0	1	1	1	10
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	1	3.00	3.00	3.00	90.00	0.00	0.00	-15.00	5.00	0.00				10.00
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	0	3.00	3.00	3.00	90.00	0.00	0.00	-9.00	5.00	0.00	1.00	1.00	1.00	10.00
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	1	3.00	3.00	3.00	90.00	0.00	0.00	-3.00	5.00	0.00				10.00
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	0	3.00	3.00	3.00	90.00	0.00	0.00	3.00	5.00	0.00	1.00	1.00	1.00	10.00
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	1	3.00	3.00	3.00	90.00	0.00	0.00	9.00	5.00	0.00				10.00
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/uvSphere.vtk	0	3.00	3.00	3.00	90.00	0.00	0.00	15.00	5.00	0.00	1.00	1.00	1.00	10.00

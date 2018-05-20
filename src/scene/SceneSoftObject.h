@@ -23,13 +23,13 @@ public:
   SceneSoftObject();
   SceneSoftObject(vtkSmartPointer<vtkActor> actor);
   ~SceneSoftObject();
-  void InitSoftBody(
-      btSoftBodyWorldInfo &worldInfo,
-      vtkSmartPointer<vtkTransform> = vtkSmartPointer<vtkTransform>::New());
+  void InitSoftBody(btSoftBodyWorldInfo &worldInfo,
+                    vtkSmartPointer<vtkTransform> transform =
+                        vtkSmartPointer<vtkTransform>::New());
   void UpdateMesh();
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
 
-  btVector3 getCenterOfGeometry();
+  btVector3 GetCenterOfGeometry();
 };
 
 #endif // !SCENE_SOFT_OBJECT_H

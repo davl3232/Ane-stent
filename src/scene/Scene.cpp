@@ -166,7 +166,6 @@ void Scene::Loop() {
 }
 void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->UpdatePhysics(deltaTime);
-  // this->DebugNormals();
   this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
@@ -182,91 +181,6 @@ void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdateMesh();
   }
-}
-vtkSmartPointer<vtkAssembly>
-GetNormalsProp(std::shared_ptr<btSoftBody> softBody) {
-  vtkSmartPointer<vtkAssembly> assembly = vtkSmartPointer<vtkAssembly>::New();
-
-  size_t numNodes = softBody->m_nodes.size();
-
-  for (size_t i = 0; i < numNodes; i++) {
-    btSoftBody::Node node = softBody->m_nodes[i];
-    btVector3 p = node.m_x;
-    btVector3 n = node.m_n;
-
-    double origin[3];
-    origin[0] = p.getX();
-    origin[1] = p.getY();
-    origin[2] = p.getZ();
-
-    // Compute a basis
-    double normalizedX[3];
-    double normalizedY[3];
-    double normalizedZ[3];
-
-    normalizedX[0] = n.getX();
-    normalizedX[1] = n.getY();
-    normalizedX[2] = n.getZ();
-
-    // The X axis is a vector from start to end
-    double length = vtkMath::Norm(normalizedX);
-    vtkMath::Normalize(normalizedX);
-
-    // The Z axis is an arbitrary vector cross X
-    double arbitrary[3];
-    arbitrary[0] = 1;
-    arbitrary[1] = 1;
-    arbitrary[2] = 1;
-    vtkMath::Cross(normalizedX, arbitrary, normalizedZ);
-    vtkMath::Normalize(normalizedZ);
-
-    // The Y axis is Z cross X
-    vtkMath::Cross(normalizedZ, normalizedX, normalizedY);
-    vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-
-    // Create the direction cosine matrix
-    matrix->Identity();
-    for (unsigned int i = 0; i < 3; i++) {
-      matrix->SetElement(i, 0, normalizedX[i]);
-      matrix->SetElement(i, 1, normalizedY[i]);
-      matrix->SetElement(i, 2, normalizedZ[i]);
-    }
-
-    // Setup the arrows
-    vtkSmartPointer<vtkArrowSource> arrowSource =
-        vtkSmartPointer<vtkArrowSource>::New();
-    arrowSource->Update();
-
-    vtkSmartPointer<vtkPolyDataMapper> vectorMapper =
-        vtkSmartPointer<vtkPolyDataMapper>::New();
-    vectorMapper->SetInputConnection(arrowSource->GetOutputPort());
-    vtkSmartPointer<vtkActor> vectorActor = vtkSmartPointer<vtkActor>::New();
-    vectorActor->SetMapper(vectorMapper);
-
-    // Apply the transforms
-    vtkSmartPointer<vtkTransform> transform =
-        vtkSmartPointer<vtkTransform>::New();
-    transform->Translate(origin);
-    transform->Concatenate(matrix);
-    transform->Scale(length, length, length);
-    vectorActor->SetUserTransform(transform);
-
-    assembly->AddPart(vectorActor);
-  }
-
-  return assembly;
-}
-void Scene::DebugNormals() {
-  std::cout << "NORMALS" << std::endl;
-  this->renderWindowInteractor->GetRenderWindow()
-      ->GetRenderers()
-      ->GetFirstRenderer()
-      ->RemoveActor(this->normals);
-  this->normals = GetNormalsProp(this->softObjects[0]->softBody);
-  this->renderWindowInteractor->GetRenderWindow()
-      ->GetRenderers()
-      ->GetFirstRenderer()
-      ->AddActor(this->normals);
 }
 void Scene::AddRigidObject(std::shared_ptr<SceneRigidObject> object) {
   this->rigidObjects.push_back(object);

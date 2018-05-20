@@ -43,10 +43,9 @@ void SceneSoftObject::InitSoftBody(btSoftBodyWorldInfo &worldInfo,
   vtkSmartPointer<vtkPoints> oldpts = polyData->GetPoints();
   for (vtkIdType i = 0; i < numVerts; i++) {
     // Obtener vértice.
-    double pk[4];
+    double pk[3];
     oldpts->GetPoint(i, pk);
-    pk[3] = 0;
-    double p[4];
+    double p[3];
     transform->TransformPoint(pk, p);
     newpts->InsertNextPoint(p);
 
@@ -125,13 +124,14 @@ void SceneSoftObject::UpdateMesh() {
   // std::cout << "ACTUALIZADA." << this->name << std::endl;
 }
 
-btVector3 SceneSoftObject::getCenterOfGeometry() {
+btVector3 SceneSoftObject::GetCenterOfGeometry() {
   btVector3 centerOfGeometry(0, 0, 0);
   for (size_t i = 0; i < this->softBody->m_nodes.size(); i++) {
     btSoftBody::Node node = this->softBody->m_nodes[i];
     centerOfGeometry += node.m_x;
   }
-  return centerOfGeometry / double(this->softBody->m_nodes.size());
+  centerOfGeometry /= double(this->softBody->m_nodes.size());
+  return centerOfGeometry;
 }
 
 void SceneSoftObject::UpdatePhysics(std::chrono::duration<double> deltaTime) {}
