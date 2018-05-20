@@ -16,7 +16,6 @@ class Scene {
 private:
   std::vector<std::shared_ptr<SceneRigidObject>> rigidObjects;
   std::vector<std::shared_ptr<SceneSoftObject>> softObjects;
-  vtkSmartPointer<vtkAssembly> normals;
 
 public:
   btSoftBodyWorldInfo softBodyWorldInfo;

@@ -28,7 +28,6 @@ public:
                         vtkSmartPointer<vtkTransform>::New());
   void UpdateMesh();
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
-
   btVector3 GetCenterOfGeometry();
 };
 

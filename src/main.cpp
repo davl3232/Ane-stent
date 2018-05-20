@@ -36,7 +36,7 @@ std::shared_ptr<SceneRigidObject> loadPlane() {
 
   vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
   actor->SetMapper(mapper);
-  actor->GetProperty()->SetColor(0, 1, 0);
+  actor->GetProperty()->SetColor(1, 1, 1);
 
   // Crear collider de cubo.
   std::shared_ptr<btCollisionShape> collider(
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
       btQuaternion rotation;
       rotation.setEuler(ry, rx, rz);
       rigidObject = ModelLoader::Load(filename, mass, transform);
-      rigidObject->rigidBody->getCollisionShape()->setMargin(0.1);
+      // rigidObject->rigidBody->getCollisionShape()->setMargin(0.1);
       rigidObject->rigidBody->setWorldTransform(
           btTransform(rotation, btVector3(tx, ty, tz)));
 
@@ -147,15 +147,15 @@ int main(int argc, char **argv) {
       softObject =
           ModelLoader::LoadSoft(filename, scene->softBodyWorldInfo, transform);
       softObject->softBody->m_worldInfo = &(scene->softBodyWorldInfo);
-      softObject->softBody->getCollisionShape()->setMargin(0.1);
+      // softObject->softBody->getCollisionShape()->setMargin(0.1);
       btSoftBody::Material *pm = softObject->softBody->appendMaterial();
       pm->m_kLST = kLST;
       pm->m_kAST = kAST;
       pm->m_kVST = kVST;
-      softObject->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
-      softObject->softBody->m_cfg.kDF = 1;
-      softObject->softBody->m_cfg.kDP = 0.001; // fun factor...
       softObject->softBody->generateBendingConstraints(2, pm);
+      softObject->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
+      softObject->softBody->m_cfg.piterations = 2;
+      softObject->softBody->m_cfg.kDF = 0.5;
       softObject->softBody->randomizeConstraints();
       softObject->softBody->setTotalMass(mass, true);
       if (inflates) {

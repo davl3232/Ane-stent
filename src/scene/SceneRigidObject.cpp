@@ -9,8 +9,7 @@
 
 #include "RigidMotionState.h"
 
-void SceneRigidObject::InitRigidBody(btScalar mass,
-                                     vtkSmartPointer<vtkTransform> transform) {
+void SceneRigidObject::InitRigidBody(btScalar mass) {
   btVector3 inertia(0, 0, 0);
   this->collider->calculateLocalInertia(mass, inertia);
   this->motionState =

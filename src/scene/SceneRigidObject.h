@@ -31,9 +31,7 @@ public:
                    std::shared_ptr<btRigidBody> rigidBody);
 
   ~SceneRigidObject();
-  void InitRigidBody(btScalar mass = 1,
-                     vtkSmartPointer<vtkTransform> transform =
-                         vtkSmartPointer<vtkTransform>::New());
+  void InitRigidBody(btScalar mass = 1);
   virtual void UpdatePhysics(std::chrono::duration<double> deltaTime);
   btVector3 GetCenterOfGeometry();
 };
