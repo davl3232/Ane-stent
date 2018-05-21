@@ -78,6 +78,23 @@ int main(int argc, char **argv) {
     kLST = kAST = kVST = 0.1;
     double mass = 1;
     bool isRigid = 1;
+    btScalar kVCF = 1;      // Velocities correction factor (Baumgarte)
+    btScalar kDP = 0;       // Damping coefficient [0,1]
+    btScalar kDG = 0;       // Drag coefficient [0,+inf]
+    btScalar kLF = 0;       // Lift coefficient [0,+inf]
+    btScalar kPR = 0;       // Pressure coefficient [-inf,+inf]
+    btScalar kVC = 0;       // Volume conversation coefficient [0,+inf]
+    btScalar kDF = 0.2;     // Dynamic friction coefficient [0,1]
+    btScalar kMT = 0;       // Pose matching coefficient [0,1]
+    btScalar kCHR = 1;      // Rigid contacts hardness [0,1]
+    btScalar kKHR = 0.1;    // Kinetic contacts hardness [0,1]
+    btScalar kSHR = 1;      // Soft contacts hardness [0,1]
+    btScalar kAHR = 0.7;    // Anchors hardness [0,1]
+    btScalar maxvolume = 1; // Maximum volume ratio for pose
+    btScalar timescale = 1; // Time scale
+    int viterations = 0;    // Velocities solver iterations
+    int piterations = 1;    // Positions solver iterations
+    int diterations = 0;    // Drift solver iterations
     if (lin >> isRigid) {
       if (isRigid) {
         if (lin >> sx >> sy >> sz) {
@@ -93,8 +110,12 @@ int main(int argc, char **argv) {
             if (lin >> tx >> ty >> tz) {
               if (lin >> kLST >> kAST >> kVST) {
                 if (lin >> mass) {
-                  if (lin >> dPR) {
-                    inflates = true;
+                  if (lin >> kVCF >> kDP >> kDG >> kLF >> kPR >> kVC >> kDF >>
+                      kMT >> kCHR >> kKHR >> kSHR >> kAHR >> maxvolume >>
+                      timescale >> viterations >> piterations >> diterations) {
+                    if (lin >> dPR) {
+                      inflates = true;
+                    }
                   }
                 }
               }
@@ -103,7 +124,6 @@ int main(int argc, char **argv) {
         }
       }
     }
-
     std::cout << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     std::cout << filename << std::endl;
@@ -116,6 +136,23 @@ int main(int argc, char **argv) {
     std::cout << "Mass: " << mass << std::endl;
     if (!isRigid) {
       std::cout << kLST << " " << kAST << " " << kVST << std::endl;
+      std::cout << "kVCF: " << kVCF << std::endl;
+      std::cout << "kDP: " << kDP << std::endl;
+      std::cout << "kDG: " << kDG << std::endl;
+      std::cout << "kLF: " << kLF << std::endl;
+      std::cout << "kPR: " << kPR << std::endl;
+      std::cout << "kVC: " << kVC << std::endl;
+      std::cout << "kDF: " << kDF << std::endl;
+      std::cout << "kMT: " << kMT << std::endl;
+      std::cout << "kCHR: " << kCHR << std::endl;
+      std::cout << "kKHR: " << kKHR << std::endl;
+      std::cout << "kSHR: " << kSHR << std::endl;
+      std::cout << "kAHR: " << kAHR << std::endl;
+      std::cout << "maxvolume: " << maxvolume << std::endl;
+      std::cout << "timescale: " << timescale << std::endl;
+      std::cout << "viterations: " << viterations << std::endl;
+      std::cout << "piterations: " << piterations << std::endl;
+      std::cout << "diterations: " << diterations << std::endl;
       std::cout << "Inflates: " << inflates << std::endl;
     }
     std::cout << "----------------------------------------" << std::endl;
@@ -154,8 +191,23 @@ int main(int argc, char **argv) {
       pm->m_kVST = kVST;
       softObject->softBody->generateBendingConstraints(2, pm);
       softObject->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
-      softObject->softBody->m_cfg.piterations = 2;
-      softObject->softBody->m_cfg.kDF = 0.5;
+      softObject->softBody->m_cfg.kVCF = kVCF;
+      softObject->softBody->m_cfg.kDP = kDP;
+      softObject->softBody->m_cfg.kDG = kDG;
+      softObject->softBody->m_cfg.kLF = kLF;
+      softObject->softBody->m_cfg.kPR = kPR;
+      softObject->softBody->m_cfg.kVC = kVC;
+      softObject->softBody->m_cfg.kDF = kDF;
+      softObject->softBody->m_cfg.kMT = kMT;
+      softObject->softBody->m_cfg.kCHR = kCHR;
+      softObject->softBody->m_cfg.kKHR = kKHR;
+      softObject->softBody->m_cfg.kSHR = kSHR;
+      softObject->softBody->m_cfg.kAHR = kAHR;
+      softObject->softBody->m_cfg.maxvolume = maxvolume;
+      softObject->softBody->m_cfg.timescale = timescale;
+      softObject->softBody->m_cfg.viterations = viterations;
+      softObject->softBody->m_cfg.piterations = piterations;
+      softObject->softBody->m_cfg.diterations = diterations;
       softObject->softBody->randomizeConstraints();
       softObject->softBody->setTotalMass(mass, true);
       if (inflates) {
