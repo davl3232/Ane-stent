@@ -26,6 +26,16 @@ h1, h2, h3, h4, h5, h6 {
 	text-transform: uppercase;
 }
 
+h1 {
+	font-size: 50px;
+}
+
+@media (min-width: 768px) {
+	h1 {
+		font-size: 70px;
+	}
+}
+
 /*hr.star-light, hr.star-primary {
 	max-width: 250px;
 	margin: 25px auto 30px;
@@ -264,50 +274,59 @@ nav#mainNav .nav-item>a.nav-link {
 }
 */
 
-.icn-entregable {
-	display: inline-block;
-	max-height: 5em;
-	padding: 20px;
-}
-
-.icn-entregable-binario {
-	display: inline-block;
-	max-height: 5em;
-	padding: 25px;
-}
-
 .entregable {
 	font-size: 1.25em;
-	transition: all 0.25s;
 	text-align: center;
+	padding: 20px;
 }
+/*.entregable, .entregable *, .entregable a {
+	text-align: center;
+}*/
+@media (min-width: 576px) {
+	.entregable {
+		font-size: 1.25em;
+		text-align: left;
+	}
+	/*.entregable, .entregable *, .entregable a {
+		text-align: right;
+	}*/
+}
+
+/*.entregable, .entregable *, .entregable a {
+	text-align: right;
+}*/
 
 .entregable:hover {
 	font-size: 1.25em;
 }
 
-.text-center-xs {
+.icn-entregable {
+	display: inline-block;
+	max-height: 3em;
+	padding: 5px;
+}
+
+/*.text-center-xs {
     text-align: center;
 }
 
-/* Small devices (tablets, 768px and up) */
+
 @media (min-width: 768px) {
     .text-left-sm {
         text-align: left;
     }
 }
 
-/* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
     .text-left-md {
         text-align: left;
     }
 }
 
-/* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
     .text-left-lg {
         text-align: left;
     }
 }
 
+*/
