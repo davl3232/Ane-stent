@@ -18,6 +18,7 @@ private:
   std::vector<std::shared_ptr<SceneSoftObject>> softObjects;
 
 public:
+  int frameNum = 0;
   btSoftBodyWorldInfo softBodyWorldInfo;
   std::shared_ptr<btSoftRigidDynamicsWorld> dynamicsWorld;
   vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor;

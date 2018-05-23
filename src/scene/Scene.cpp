@@ -21,7 +21,9 @@
 #include <vtkVertexGlyphFilter.h>
 
 #include <chrono>
+#include <fstream>
 #include <memory>
+#include <sstream>
 
 class vtkTimerCallback : public vtkCommand {
 public:
@@ -169,6 +171,26 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
+  // if (frameNum < 1000) {
+  //   ofstream file;
+  //   std::stringstream ss;
+  //   ss << "../tiemposPorCuadro/rigid/" << this->rigidObjects[1]->name <<
+  //   ".txt"; std::string s = ss.str(); if (frameNum == 0) {
+  //     file.open(s.c_str());
+  //   } else {
+  //     file.open(s.c_str(), ios::app);
+  //   }
+  //   if (!file.is_open()) {
+  //     cerr << "open error\n";
+  //   }
+  //   cout << frameNum << "\t" << deltaTime.count() << std::endl;
+  //   if (!(file << frameNum++ << "\t" << deltaTime.count() << std::endl)) {
+  //     cerr << "write error\n";
+  //   }
+
+  //   file.close();
+  // }
+
   for (size_t i = 0; i < this->rigidObjects.size(); i++) {
     this->rigidObjects[i]->UpdatePhysics(deltaTime);
   }

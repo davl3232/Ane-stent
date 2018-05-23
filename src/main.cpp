@@ -164,8 +164,11 @@ int main(int argc, char **argv) {
           vtkSmartPointer<vtkTransform>::New();
       transform->Scale(sx, sy, sz);
       btQuaternion rotation;
-      rotation.setEuler(ry, rx, rz);
+      rotation.setEuler(ry * 3.141592653589793 / 180.0,
+                        rx * 3.141592653589793 / 180.0,
+                        rz * 3.141592653589793 / 180.0);
       rigidObject = ModelLoader::Load(filename, mass, transform);
+      rigidObject->rigidBody->setFriction(0);
       // rigidObject->rigidBody->getCollisionShape()->setMargin(0.1);
       rigidObject->rigidBody->setWorldTransform(
           btTransform(rotation, btVector3(tx, ty, tz)));
