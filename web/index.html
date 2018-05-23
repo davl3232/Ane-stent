@@ -1,198 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
+<head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>ANE-STENT</title>
+  <title>ANE-STENT</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom fonts for this template -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+  <!-- Custom fonts for this template -->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
-    <!-- Custom style -->
-    <link href="css/custom.css" rel="stylesheet">
+  <!-- Custom style -->
+  <link href="css/custom.css" rel="stylesheet">
 
-  </head>
+</head>
 
-  <body id="page-top">
+<body id="page-top">
+  <svg>
+    <filter id="dropshadow" height="130%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+      <feOffset dx="0" dy="0" result="offsetblur"/> <!-- how much to offset -->
+      <feComponentTransfer>
+        <feFuncR type="discrete" tableValues="1"/>
+        <feFuncG type="discrete" tableValues="1"/>
+        <feFuncB type="discrete" tableValues="1"/>
+        <feFuncA type="linear" slope="1"/> <!-- slope is the opacity of the shadow -->
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/> <!-- this contains the offset blurred image -->
+        <feMergeNode in="SourceGraphic"/> <!-- this contains the element that the filter is applied to -->
+      </feMerge>
+    </filter>
+  </svg>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">
-          <span class="logo-ane">ANE</span><span class="logo-dash">-</span><span class="logo-stent">STENT</span>
-        </a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#o-general">Objetivo general</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#o-especif">Objetivos específicos</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#entregables">Entregables</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Header -->
-    <header class="masthead">
-      <div class="container">
-        <div class="intro-text">
-          <h1><span class="logo-ane">ANE</span><span class="logo-dash">-</span><span class="logo-stent">STENT</span></h1>
-          <img class="stent" src="img/stent-grey.svg"/>
-          <p class="skills">Stephanie Dominguez - Juan Espinosa - Jose Quintero - David Villamizar</p>
-          <p class="skills">PhD Leonardo Flórez Valencia</p>
-        </div>
-      </div>
-    </header>
-
-
-    <section class="success" id="o-general">
-      <div class="container">
-        <h2 class="text-center">Objetivo general</h2>
-        <img class="stent" src="img/stent-white.svg"/>
-        <div class="row">
-          <p class="text-center">
-            El trabajo de grado ANE-STENT es un proyecto de investigación que busca evaluar la factibilidad de implementar una simulación de la física de un segmento de vaso sanguíneo con stent, usando “Bullet Physics”, en el contexto de una cirugía de postura de stent.
-          </p>
-        </div>
-      </div>
-    </section>
-    <section id="o-especif">
-      <div class="container">
-        <h2 class="text-center">Objetivos específicos</h2>
-        <img class="stent" src="img/stent-black.svg"/>
-        <div class="row">
-          <ol>
-            <li>
-              <p>
-                Definir una arquitectura basada en “Bullet Physics”.
-              </p>
-            </li>
-            <li>
-              <p>
-                Elaborar una prueba de concepto de una simulación física de un aneurisma con stent usando “Bullet Physics”.
-              </p>
-            </li>
-            <li>
-              <p>
-                Definir un criterio y usarlo para evaluar la factibilidad de la implementación de la prueba de concepto de la simulación, usando métricas calculadas a partir de mediciones obtenidas durante el desarrollo.
-              </p>
-            </li>
-            <li>
-              <p>
-                Elaborar un informe del proyecto en el que se detallan los problemas y soluciones según lo especificado en el la plantilla generada por el grupo.
-              </p>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="success" id="entregables">
-      <div class="container">
-        <h2 class="text-center">Entregables</h2>
-        <img class="stent" src="img/stent-white.svg"/>
-        <div class="row">
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/Poster.pdf" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt=""/>
-              Póster
-            </a>
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/Propuesta.pdf" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt=""/>
-              Propuesta
-            </a>
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/Plan de proyecto.docx" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-word.svg" alt=""/>
-              Plan de proyecto
-            </a>
-            (<a href="entregables/Anexos_Plan de proyecto.zip" class="entregable-anexo">Anexos</a>)
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/SRS.docx" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-word.svg" alt=""/>
-              SRS
-            </a>
-            (<a href="entregables/Anexos_SRS.zip" class="entregable-anexo">Anexos</a>)
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/SDD.pdf" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt=""/>
-              SDD
-            </a>
-            (<a href="entregables/Anexos_SDD.zip" class="entregable-anexo">Anexos</a>)
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/PostMortem.pdf" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt=""/>
-              PostMortem
-            </a>
-            (<a href="entregables/Anexos_PostMortem.zip" class="entregable-anexo">Anexos</a>)
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="entregables/Memoria.pdf" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt=""/>
-            </a>
-            <a href="entregables/Memoria.docx" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-word.svg" alt=""/>
-            </a>
-            Memoria
-            (<a href="entregables/Anexos_Memoria.zip" class="entregable-anexo">Anexos</a>)
-          </div>
-          <div class="col-sm-12 col-md-6 col-xl-4 entregable">
-            <a href="https://github.com/davl3232/Ane-stent/" class="entregable-principal">
-              <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdfs.svg" alt="Código"/>
-              Código
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-    <div class="scroll-top d-lg-none">
-      <a class="btn btn-primary js-scroll-trigger" href="#page-top">
-        <i class="fa fa-chevron-up"></i>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">
+        <span class="logo-ane">ANE</span>
+        <span class="logo-dash">-</span>
+        <span class="logo-stent">STENT</span>
       </a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fa fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#o-general">Objetivo general</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#o-especif">Objetivos específicos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#entregables">Entregables</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Header -->
+  <header class="masthead">
+    <div class="container">
+      <div class="intro-text">
+        <h1>
+          <span class="logo-ane">ANE</span>
+          <span class="logo-dash">-</span>
+          <span class="logo-stent">STENT</span>
+        </h1>
+        <img class="stent" src="img/stent-grey.svg" />
+        <p class="skills">Stephanie Dominguez - Juan Espinosa - Jose Quintero - David Villamizar</p>
+        <p class="skills">PhD Leonardo Flórez Valencia</p>
+      </div>
+    </div>
+  </header>
 
-    <!-- Plugin JavaScript -->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Contact Form JavaScript -->
-    <!-- <script src="js/jqBootstrapValidation.js"></script>
+  <section class="success" id="o-general">
+    <div class="container">
+      <h2 class="text-center">Objetivo general</h2>
+      <img class="stent" src="img/stent-white.svg" />
+      <div class="row">
+        <p class="text-center">
+          El trabajo de grado ANE-STENT es un proyecto de investigación que busca evaluar la factibilidad de implementar una simulación
+          de la física de un segmento de vaso sanguíneo con stent, usando “Bullet Physics”, en el contexto de una cirugía
+          de postura de stent.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section id="o-especif">
+    <div class="container">
+      <h2 class="text-center">Objetivos específicos</h2>
+      <img class="stent" src="img/stent-black.svg" />
+      <div class="row">
+        <ol>
+          <li>
+            <p>
+              Definir una arquitectura basada en “Bullet Physics”.
+            </p>
+          </li>
+          <li>
+            <p>
+              Elaborar una prueba de concepto de una simulación física de un aneurisma con stent usando “Bullet Physics”.
+            </p>
+          </li>
+          <li>
+            <p>
+              Definir un criterio y usarlo para evaluar la factibilidad de la implementación de la prueba de concepto de la simulación,
+              usando métricas calculadas a partir de mediciones obtenidas durante el desarrollo.
+            </p>
+          </li>
+          <li>
+            <p>
+              Elaborar un informe del proyecto en el que se detallan los problemas y soluciones según lo especificado en el la plantilla
+              generada por el grupo.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="success" id="entregables">
+    <div class="container">
+      <h2 class="text-center">Entregables</h2>
+      <img class="stent" src="img/stent-white.svg" />
+      <div class="row">
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/Poster.pdf" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt="" /> Póster
+          </a>
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/Propuesta.pdf" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt="" /> Propuesta
+          </a>
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/Plan de proyecto.docx" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-word.svg" alt="" /> Plan de proyecto
+          </a>
+          (<a href="entregables/Anexos_Plan de proyecto.zip" class="entregable-anexo">Anexos</a>)
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/SRS.docx" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-word.svg" alt="" /> SRS
+          </a>
+          (<a href="entregables/Anexos_SRS.zip" class="entregable-anexo">Anexos</a>)
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/SDD.pdf" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt="" /> SDD
+          </a>
+          (<a href="entregables/Anexos_SDD.zip" class="entregable-anexo">Anexos</a>)
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/PostMortem.pdf" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt="" /> PostMortem
+          </a>
+          (<a href="entregables/Anexos_PostMortem.zip" class="entregable-anexo">Anexos</a>)
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="entregables/Memoria.pdf" class="entregable-principal"><img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-pdf.svg" alt="" /></a>
+          <a href="entregables/Memoria.docx" class="entregable-principal"><img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/file-word.svg" alt="" /></a>
+          Memoria (<a href="entregables/Anexos_Memoria.zip" class="entregable-anexo">Anexos</a>)
+        </div>
+        <div class="col-sm-12 col-md-6 col-xl-4 entregable">
+          <a href="https://github.com/davl3232/Ane-stent/" class="entregable-principal">
+            <img class="col-xs-4 col-sm-2 col-md-3 icn-entregable" src="img/gh-logo.svg" alt="Código" /> Código Fuente
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+  <div class="scroll-top d-lg-none">
+    <a class="btn btn-primary js-scroll-trigger" href="#page-top">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Contact Form JavaScript -->
+  <!-- <script src="js/jqBootstrapValidation.js"></script>
     <script src="js/contact_me.js"></script> -->
 
-    <!-- Custom scripts for this template -->
-    <script src="js/freelancer.min.js"></script>
+  <!-- Custom scripts for this template -->
+  <script src="js/freelancer.min.js"></script>
 
-  </body>
+</body>
 
 </html>

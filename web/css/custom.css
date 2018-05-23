@@ -304,6 +304,10 @@ nav#mainNav .nav-item>a.nav-link {
 	display: inline-block;
 	max-height: 3em;
 	padding: 5px;
+	object-fit: contain;
+}
+.icn-entregable:hover {
+	filter: url(#dropshadow);
 }
 
 /*.text-center-xs {
