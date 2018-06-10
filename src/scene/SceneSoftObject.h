@@ -13,6 +13,7 @@
 
 #include <vtkActor.h>
 #include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
 class SceneSoftObject {
 public:
