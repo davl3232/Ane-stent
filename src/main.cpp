@@ -56,9 +56,9 @@ int main(int argc, char **argv) {
   std::shared_ptr<Scene> scene(new Scene());
   scene->AddRigidObject(loadPlane());
 
-  if (argc < 2) {
+  if (argc < 3) {
     std::cerr << "Exception: Bad arguments." << std::endl;
-    std::cerr << "Usage: main <input_file_path>." << std::endl;
+    std::cerr << "Usage: main <input_file_path> <num_iterations>." << std::endl;
     return EXIT_FAILURE;
   }
 
@@ -92,9 +92,9 @@ int main(int argc, char **argv) {
     btScalar kAHR = 0.7;    // Anchors hardness [0,1]
     btScalar maxvolume = 1; // Maximum volume ratio for pose
     btScalar timescale = 1; // Time scale
-    int viterations = 0;    // Velocities solver iterations
-    int piterations = 1;    // Positions solver iterations
-    int diterations = 0;    // Drift solver iterations
+    int viterations = atoi(argv[2]);    // Velocities solver iterations
+    int piterations = atoi(argv[2]);    // Positions solver iterations
+    int diterations = atoi(argv[2]);    // Drift solver iterations
     if (lin >> isRigid) {
       if (isRigid) {
         if (lin >> sx >> sy >> sz) {
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
                 if (lin >> mass) {
                   if (lin >> kVCF >> kDP >> kDG >> kLF >> kPR >> kVC >> kDF >>
                       kMT >> kCHR >> kKHR >> kSHR >> kAHR >> maxvolume >>
-                      timescale >> viterations >> piterations >> diterations) {
+                      timescale) {
                     if (lin >> dPR) {
                       inflates = true;
                     }
@@ -192,7 +192,7 @@ int main(int argc, char **argv) {
       pm->m_kLST = kLST;
       pm->m_kAST = kAST;
       pm->m_kVST = kVST;
-      softObject->softBody->generateBendingConstraints(2, pm);
+      softObject->softBody->generateBendingConstraints(4, pm);
       softObject->softBody->m_cfg.collisions |= btSoftBody::fCollision::VF_SS;
       softObject->softBody->m_cfg.kVCF = kVCF;
       softObject->softBody->m_cfg.kDP = kDP;

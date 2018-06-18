@@ -50,7 +50,7 @@ public:
         this->deltaTime = this->newTime - this->prevTime;
       }
 
-      if (this->deltaTime > std::chrono::duration<double>(1. / 60) * 4) {
+      if (this->deltaTime > std::chrono::duration<double>(2)) {
         this->deltaTime = std::chrono::duration<double>(1. / 60);
       }
 
@@ -171,25 +171,28 @@ void Scene::Update(std::chrono::duration<double> deltaTime) {
   this->renderWindowInteractor->GetRenderWindow()->Render();
 }
 void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
-  // if (frameNum < 1000) {
-  //   ofstream file;
-  //   std::stringstream ss;
-  //   ss << "../tiemposPorCuadro/rigid/" << this->rigidObjects[1]->name <<
-  //   ".txt"; std::string s = ss.str(); if (frameNum == 0) {
-  //     file.open(s.c_str());
-  //   } else {
-  //     file.open(s.c_str(), ios::app);
-  //   }
-  //   if (!file.is_open()) {
-  //     cerr << "open error\n";
-  //   }
-  //   cout << frameNum << "\t" << deltaTime.count() << std::endl;
-  //   if (!(file << frameNum++ << "\t" << deltaTime.count() << std::endl)) {
-  //     cerr << "write error\n";
-  //   }
-
-  //   file.close();
-  // }
+  if (frameNum < 1000) {
+    ofstream file;
+    std::stringstream ss;
+    int iterations = this->softObjects[0]->softBody->m_cfg.viterations;
+    std::cout << iterations << std::endl;
+    ss << "/Users/davl3232/Documents/uni/tg/Ane-stent/tiemposPorCuadro/iterations/" << iterations << ".txt";
+    std::string s = ss.str();
+    if (frameNum == 0) {
+      std::cout << "Ruta: '" << s << "'" << std::endl;
+      file.open(s.c_str());
+    } else {
+      file.open(s.c_str(), ios::app);
+    }
+    if (!file.is_open()) {
+      cerr << "open error\n";
+    }
+    cout << frameNum << "\t" << deltaTime.count() << std::endl;
+    if (!(file << frameNum++ << "\t" << deltaTime.count() << std::endl)) {
+      cerr << "write error\n";
+    }
+    file.close();
+  }
 
   for (size_t i = 0; i < this->rigidObjects.size(); i++) {
     this->rigidObjects[i]->UpdatePhysics(deltaTime);
@@ -197,8 +200,7 @@ void Scene::UpdatePhysics(std::chrono::duration<double> deltaTime) {
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdatePhysics(deltaTime);
   }
-  this->dynamicsWorld->stepSimulation(deltaTime.count(), 10);
-  // std::cout << "Soft objects: " << this->softObjects.size() << std::endl;
+  this->dynamicsWorld->stepSimulation(deltaTime.count(), 1, btScalar(1.)/btScalar(120.));
   // Llamar actualización de física de cada objeto suave.
   for (size_t i = 0; i < this->softObjects.size(); i++) {
     this->softObjects[i]->UpdateMesh();

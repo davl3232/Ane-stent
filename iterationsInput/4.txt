@@ -1,0 +1,1 @@
+/Users/davl3232/Documents/uni/tg/Ane-stent/modelos/cilindroRadio.vtk	0	1	1	1	90	0	0	0	4	0	0.1	0.1	0.1	10	1	0	0	0	0	0	1	0	1	1	1	0.1	1	1	4	4	4
